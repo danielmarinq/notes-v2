@@ -150,8 +150,9 @@ The mark price is designed to be manipulation-resistant while staying close to t
 **Common Mark Price Formulations:**
 
 1. **Oracle-Anchored Method:**
+
    $$P^M_m = (1-\beta) P^I_m + \beta \cdot \text{TWAP}(P^L_m, W)$$
-   
+
    Where $\beta \in [0,1]$ controls the weight between oracle and trading prices.
    
    > **Industry Standard:** Used by Binance, Coinbase, and most CEXs. Binance uses $\beta \approx 0.2$ with 1-minute TWAP. Simple implementation but vulnerable to manipulation during low liquidity periods. 
@@ -159,8 +160,9 @@ The mark price is designed to be manipulation-resistant while staying close to t
    > **Sources:** [Binance Futures API Documentation](https://binance-docs.github.io/apidocs/futures/en/#mark-price), [Coinbase Advanced Trade API](https://docs.cloud.coinbase.com/advanced-trade-api/docs/rest-api-overview)
 
 2. **Impact Bid/Ask Method:**
+
    $$P^M_m = P^I_m + \text{clamp}(\text{Mid Impact Price} - P^I_m, -\delta^{\max}_m, +\delta^{\max}_m)$$
-   
+
    This method uses the average of impact bid and ask prices (the cost to execute a standardized order size) to measure market sentiment while limiting deviation from the index price.
    
    > **Industry Standard:** Pioneered by BitMEX, adopted by dYdX and Hyperliquid. BitMEX uses $\delta^{\max} = 0.005$, dYdX uses $\pm 0.01$. (0.5% and ±1% respectively) More manipulation-resistant but computationally complex. Preferred by sophisticated traders.
@@ -234,6 +236,7 @@ $$U_{i,m} = Q_{i,m} \cdot (P^M_m - \bar{P}^E_{i,m})$$
 Modern perpetual futures exchanges support multiple types of collateral:
 
 **Collateral Value (Post-Haircut):**
+
 $$M^C_i = \sum_{k} C_{i,k} \cdot P^C_k \cdot (1-h_k)$$
 
 Where:
@@ -287,6 +290,7 @@ The funding mechanism creates a self-correcting price discovery system:
 The funding rate consists of two components:
 
 **1. Premium Component:**
+
 $$P_m = \frac{P^M_m - P^I_m}{P^I_m}$$
 
 This measures how much the perpetual is trading above or below the index price.
@@ -296,6 +300,7 @@ This measures how much the perpetual is trading above or below the index price.
  > **Sources:** [BitMEX Funding](https://www.bitmex.com/app/funding), [Binance Funding Rate](https://www.binance.com/en/support/faq/360033525031), [dYdX Funding](https://help.dydx.exchange/en/articles/4800191-perpetual-contracts)
 
 **2. Interest Rate Component:**
+
 $$I_m = \frac{r^{\text{quote}} - r^{\text{base}}}{n}$$
 
 Where:
@@ -307,6 +312,7 @@ Where:
  > **Sources:** [Bybit Funding](https://www.bybit.com/en/help-center/bybitHC_Article?language=en_US&id=000001135), [Hyperliquid Docs](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/funding), [GMX Borrowing Fees](https://docs.gmx.io/docs/trading/v1#borrowing-fees)
 
 **Combined Funding Rate:**
+
 $$f_m = \text{clamp}(P_m + I_m, -f^{\max}_m, +f^{\max}_m)$$
 
 The clamp function prevents extreme funding rates that could destabilize the market.
@@ -318,6 +324,7 @@ The clamp function prevents extreme funding rates that could destabilize the mar
 ### Funding Payments
 
 **Payment Calculation:**
+
 $$\text{FP}_{i,m} = \text{sign}(Q_{i,m}) \cdot |Q_{i,m}| \cdot P^M_m \cdot f_m$$
 
  > **Industry Standard:** Universal formula. Hyperliquid uses 1-hour TWAP of mark price, BitMEX uses instantaneous mark price at funding time. TWAP approach prevents last-minute manipulation but reduces responsiveness.
@@ -1285,12 +1292,15 @@ $$\boldsymbol{\theta} = (\boldsymbol{\theta}^P, \boldsymbol{\theta}^F, \boldsymb
 | **Update Frequency** | $\tau^{\text{update}}$ | Time between mark price updates | Seconds | Real-time accuracy vs computational cost |
 
 **Mathematical Constraints:**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 \beta_m &\in [0, 1] \quad \forall m \in \mathcal{M} \quad \text{(0 = pure oracle, 1 = pure market)} \\
 W_m &\in [1, 3600] \text{ seconds} \quad \text{(1s to 1 hour)} \\
 \delta^{\max}_m &\in [0.001, 0.1] \quad \text{(0.1\% to 10\% of index price)} \\
 \tau^{\text{update}} &\in [0.1, 300] \text{ seconds} \quad \text{(100ms to 5 minutes)}
-\end{aligned}$$
+\end{aligned}
+```
 
 **Objective Functions (Detailed):**
 
@@ -1330,12 +1340,15 @@ where $\alpha_1 + \alpha_2 + \alpha_3 = 1$ and $\alpha_i \geq 0$ represent the r
 | **Premium Window** | $W^{\text{premium}}$ | Time window for premium calculation smoothing | Seconds | Reduce funding rate volatility |
 
 **Mathematical Constraints:**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 I_m &\in [0, 0.001] \text{ per period} \quad \text{(0\% to 0.1\% per period)} \\
 f^{\max}_m &\in [0.001, 0.1] \text{ per period} \quad \text{(0.1\% to 10\% per period)} \\
 \tau^{\text{fund}} &\in [3600, 86400] \text{ seconds} \quad \text{(1 hour to 24 hours)} \\
 W^{\text{premium}} &\in [60, 28800] \text{ seconds} \quad \text{(1 minute to 8 hours)}
-\end{aligned}$$
+\end{aligned}
+```
 
 **Objective Functions (Detailed):**
 
@@ -1384,12 +1397,15 @@ where $\lambda > 0$ is the **volatility penalty weight** that determines how muc
 | **Exposure Limit** | $N^{\max}_i$ | Maximum total notional per trader | USD | Limit individual trader risk |
 
 **Mathematical Constraints:**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 r^{\text{maint}}_m &\leq r^{\text{init}}_m \leq 1 \quad \forall m \quad \text{(maintenance ≤ initial)} \\
 r^{\text{init}}_m &\in [0.01, 0.5] \quad \text{(1\% to 50\% - corresponds to 2x to 100x leverage)} \\
 h_k &\in [0, 0.5] \quad \text{(0\% to 50\% haircut)} \\
 q^{\max}_m &> 0, \quad N^{\max}_i > 0 \quad \text{(positive limits)}
-\end{aligned}$$
+\end{aligned}
+```
 
 **Risk Metrics (Detailed Definitions):**
 
@@ -1438,12 +1454,15 @@ $$\min_{\boldsymbol{\theta}^R} \begin{pmatrix} \text{ES}_{0.01}(\boldsymbol{\the
 | **Liquidation Buffer** | $\epsilon^{\text{buffer}}$ | Safety margin above maintenance requirement | Fraction of maintenance margin | Prevent edge-case liquidations |
 
 **Mathematical Constraints:**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 \gamma_m &\in [0.001, 0.05] \quad \text{(0.1\% to 5\% penalty)} \\
 \phi^{\text{target}} &\in [1.1, 2.0] \quad \text{(110\% to 200\% of maintenance margin)} \\
 \tau^{\text{cooldown}} &\in [0, 300] \text{ seconds} \quad \text{(0 to 5 minutes)} \\
 \epsilon^{\text{buffer}} &\in [0, 0.01] \quad \text{(0\% to 1\% buffer above maintenance)}
-\end{aligned}$$
+\end{aligned}
+```
 
 **Performance Metrics (Detailed):**
 
@@ -2238,11 +2257,14 @@ $$u_i = (C_i, Q_i, F_i, H_i, O_i)$$
 | **Orders** | $O_i$ | Active orders by user | Order set | Order placement, cancellation |
 
 **User State Invariants:**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 C_{i,k} &\geq 0 \quad \forall k \text{ (non-negative collateral)} \\
 Q_{i,m} &\in \mathbb{R} \quad \forall m \text{ (signed positions)} \\
 \bar{P}^E_{i,m} &> 0 \text{ if } Q_{i,m} \neq 0 \text{ (valid entry prices)}
-\end{aligned}$$
+\end{aligned}
+```
 
 #### 3. Market State Definition
 
@@ -2262,12 +2284,15 @@ $$m_j = (P^I_j, P^M_j, P^L_j, f_j, \text{OI}_j, B_j, A_j)$$
 | **Ask Book** | $A_j$ | Sell orders by price level | Order book | Order management |
 
 **Market State Invariants:**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 P^I_j, P^M_j, P^L_j &> 0 \quad \text{(positive prices)} \\
 |f_j| &\leq f^{\max}_j \quad \text{(funding rate bounds)} \\
 \text{OI}_j &= \sum_i |Q_{i,j}| \quad \text{(open interest consistency)} \\
 \sum_i Q_{i,j} &= 0 \quad \text{(zero-sum constraint)}
-\end{aligned}$$
+\end{aligned}
+```
 
 ### State Transition Functions
 
@@ -2291,20 +2316,26 @@ $$\mathcal{E}_t = \mathcal{E}^{\text{trade}}_t \cup \mathcal{E}^{\text{order}}_t
 $$e^{\text{trade}} = (\text{maker}_i, \text{taker}_j, m, q, p, t)$$
 
 **State Updates from Trade:**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 Q_{i,m}^{t+1} &= Q_{i,m}^t + q \cdot s_i \\
 Q_{j,m}^{t+1} &= Q_{j,m}^t + q \cdot s_j \\
 P^L_{m,t+1} &= p \\
 \bar{P}^E_{i,m,t+1} &= \text{UpdateEntry}(\bar{P}^E_{i,m,t}, p, Q_{i,m}^t, q, s_i)
-\end{aligned}$$
+\end{aligned}
+```
 
 where $s_i, s_j \in \{-1, +1\}$ are the position direction signs for maker and taker.
 
 **Entry Price Update Function:**
-$$\text{UpdateEntry}(\bar{P}^E_{\text{old}}, p_{\text{new}}, Q_{\text{old}}, q_{\text{trade}}, s) = \begin{cases}
+
+```math
+\text{UpdateEntry}(\bar{P}^E_{\text{old}}, p_{\text{new}}, Q_{\text{old}}, q_{\text{trade}}, s) = \begin{cases}
 \frac{\bar{P}^E_{\text{old}} \cdot |Q_{\text{old}}| + p_{\text{new}} \cdot q_{\text{trade}}}{|Q_{\text{old}}| + q_{\text{trade}}} & \text{if } s \cdot Q_{\text{old}} \geq 0 \\
 \bar{P}^E_{\text{old}} & \text{if } s \cdot Q_{\text{old}} < 0
-\end{cases}$$
+\end{cases}
+```
 
 **Interpretation:**
 - **Same direction** ($s \cdot Q_{\text{old}} \geq 0$): Update VWAP with new trade
@@ -2336,11 +2367,14 @@ $$\text{Liquidation Required}_i = E_i^t \leq \text{MM}_i^t$$
 $$e^{\text{liquidation}} = (i, m^*, \phi, P^{\text{liq}})$$
 
 **Liquidation State Updates:**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 Q_{i,m^*}^{t+1} &= Q_{i,m^*}^t \times (1 - \phi) \quad \text{(position reduction)} \\
 C_{i,\text{base}}^{t+1} &= C_{i,\text{base}}^t + \text{Realized PnL} - \text{Penalty} \quad \text{(collateral adjustment)} \\
 \mathcal{IF}^{t+1} &= \mathcal{IF}^t + \text{Penalty} + \min(0, C_{i,\text{base}}^{t+1}) \quad \text{(insurance fund update)}
-\end{aligned}$$
+\end{aligned}
+```
 
 ### Deterministic Execution Order
 
@@ -2438,13 +2472,16 @@ $$\text{PostCondition}(\mathcal{S}_{t+1}) = \text{ValidState}(\mathcal{S}_{t+1})
 
 **Input:** Order $o = (i, m, \text{side}, q, p, \text{type})$
 **Pre-Conditions:**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 i &\in \mathcal{I} \quad \text{(valid user)} \\
 m &\in \mathcal{M} \quad \text{(valid market)} \\
 q &> 0 \quad \text{(positive quantity)} \\
 p &> 0 \quad \text{(positive price)} \\
 E_i + \text{Unrealized PnL}(Q_i^{\text{new}}) &\geq \text{IM}_i^{\text{new}} \quad \text{(margin check)}
-\end{aligned}$$
+\end{aligned}
+```
 
 **State Transition:**
 $$\mathcal{S}_{t+1} = \text{PlaceOrder}(\mathcal{S}_t, o)$$
@@ -2458,20 +2495,26 @@ $$\mathcal{S}_{t+1} = \text{PlaceOrder}(\mathcal{S}_t, o)$$
 
 **Input:** Trade $\tau = (i_{\text{maker}}, i_{\text{taker}}, m, q, p)$
 **Pre-Conditions:**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 \text{Price Compatibility} &: P_{\text{maker}} \leq p \leq P_{\text{taker}} \\
 \text{Quantity Limit} &: q \leq \min(Q_{\text{maker}}, Q_{\text{taker}}) \\
 \text{Margin Check} &: E_i^{\text{post}} \geq \text{IM}_i^{\text{post}}
-\end{aligned}$$
+\end{aligned}
+```
 
 **Atomic State Updates:**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 Q_{\text{maker}}^{t+1} &= Q_{\text{maker}}^t + q \cdot s_{\text{maker}} \\
 Q_{\text{taker}}^{t+1} &= Q_{\text{taker}}^t + q \cdot s_{\text{taker}} \\
 P^L_{m,t+1} &= p \\
 C_{\text{maker}}^{t+1} &= C_{\text{maker}}^t - F_{\text{maker}} \\
 C_{\text{taker}}^{t+1} &= C_{\text{taker}}^t - F_{\text{taker}}
-\end{aligned}$$
+\end{aligned}
+```
 
 **Variable Definitions:**
 - $Q_{\text{maker}}, Q_{\text{taker}}$: Position sizes for maker and taker in market $m$
@@ -3073,11 +3116,14 @@ $$\beta_m = \begin{cases}
 **Multi-Level Validation Process:**
 
 **Level 1: Bounds Check**
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 0.05 &\leq r^{\text{init}}_m \leq 0.5 \\
 0.01 &\leq f^{\max}_m \leq 0.2 \\
 0.005 &\leq \gamma_m \leq 0.05
-\end{aligned}$$
+\end{aligned}
+```
 
 **Parameter Interpretations:**
 - $r^{\text{init}}_m$: Initial margin (5% to 50%, corresponding to 2x to 20x leverage)
