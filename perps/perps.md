@@ -151,7 +151,9 @@ The mark price is designed to be manipulation-resistant while staying close to t
 
 1. **Oracle-Anchored Method:**
 
-   $$P^M_m = (1-\beta) P^I_m + \beta \cdot \text{TWAP}(P^L_m, W)$$
+   $$
+   P^M_m = (1-\beta) P^I_m + \beta \cdot \text{TWAP}(P^L_m, W)
+   $$
 
    Where $\beta \in [0,1]$ controls the weight between oracle and trading prices.
    
@@ -161,7 +163,9 @@ The mark price is designed to be manipulation-resistant while staying close to t
 
 2. **Impact Bid/Ask Method:**
 
-   $$P^M_m = P^I_m + \text{clamp}(\text{Mid Impact Price} - P^I_m, -\delta^{\max}_m, +\delta^{\max}_m)$$
+   $$
+   P^M_m = P^I_m + \text{clamp}(\text{Mid Impact Price} - P^I_m, -\delta^{\max}_m, +\delta^{\max}_m)
+   $$
 
    This method uses the average of impact bid and ask prices (the cost to execute a standardized order size) to measure market sentiment while limiting deviation from the index price.
    
@@ -194,7 +198,9 @@ For trader $i$ in market $m$, we define:
 
 The fundamental market invariant ensures that perpetual futures remain zero-sum:
 
-$$\sum_{i \in \mathcal{I}} Q_{i,m} = 0 \quad \forall m$$
+$$
+\sum_{i \in \mathcal{I}} Q_{i,m} = 0 \quad \forall m
+$$
 
 **What This Means:**
 - For every 1 BTC long position, there must be exactly 1 BTC in short positions
@@ -208,7 +214,9 @@ $$\sum_{i \in \mathcal{I}} Q_{i,m} = 0 \quad \forall m$$
 
 **Unrealized PnL** represents the current value of open positions:
 
-$$U_{i,m} = Q_{i,m} \cdot (P^M_m - \bar{P}^E_{i,m})$$
+$$
+U_{i,m} = Q_{i,m} \cdot (P^M_m - \bar{P}^E_{i,m})
+$$
 
  > **Industry Standard:** Universal formula across all exchanges. Linear PnL structure is standard for USD-quoted perpetuals (vs. inverse perpetuals which use 1/P formulation).
  > 
@@ -237,7 +245,9 @@ Modern perpetual futures exchanges support multiple types of collateral:
 
 **Collateral Value (Post-Haircut):**
 
-$$M^C_i = \sum_{k} C_{i,k} \cdot P^C_k \cdot (1-h_k)$$
+$$
+M^C_i = \sum_{k} C_{i,k} \cdot P^C_k \cdot (1-h_k)
+$$
 
 Where:
 - $C_{i,k}$: Units of collateral token $k$ held by trader $i$
@@ -291,7 +301,9 @@ The funding rate consists of two components:
 
 **1. Premium Component:**
 
-$$P_m = \frac{P^M_m - P^I_m}{P^I_m}$$
+$$
+P_m = \frac{P^M_m - P^I_m}{P^I_m}
+$$
 
 This measures how much the perpetual is trading above or below the index price.
 
@@ -301,7 +313,9 @@ This measures how much the perpetual is trading above or below the index price.
 
 **2. Interest Rate Component:**
 
-$$I_m = \frac{r^{\text{quote}} - r^{\text{base}}}{n}$$
+$$
+I_m = \frac{r^{\text{quote}} - r^{\text{base}}}{n}
+$$
 
 Where:
 - $r^{\text{quote}}$, $r^{\text{base}}$: Risk-free rates for quote and base currencies
@@ -313,7 +327,9 @@ Where:
 
 **Combined Funding Rate:**
 
-$$f_m = \text{clamp}(P_m + I_m, -f^{\max}_m, +f^{\max}_m)$$
+$$
+f_m = \text{clamp}(P_m + I_m, -f^{\max}_m, +f^{\max}_m)
+$$
 
 The clamp function prevents extreme funding rates that could destabilize the market.
 
@@ -325,7 +341,9 @@ The clamp function prevents extreme funding rates that could destabilize the mar
 
 **Payment Calculation:**
 
-$$\text{FP}_{i,m} = \text{sign}(Q_{i,m}) \cdot |Q_{i,m}| \cdot P^M_m \cdot f_m$$
+$$
+\text{FP}_{i,m} = \text{sign}(Q_{i,m}) \cdot |Q_{i,m}| \cdot P^M_m \cdot f_m
+$$
 
  > **Industry Standard:** Universal formula. Hyperliquid uses 1-hour TWAP of mark price, BitMEX uses instantaneous mark price at funding time. TWAP approach prevents last-minute manipulation but reduces responsiveness.
  > 
@@ -338,7 +356,10 @@ $$\text{FP}_{i,m} = \text{sign}(Q_{i,m}) \cdot |Q_{i,m}| \cdot P^M_m \cdot f_m$$
 > **Industry Standard:** Universal sign convention. Ensures longs pay when perpetual trades at premium to spot.
 
 **Zero-Sum Property:**
-$$\sum_{i \in \mathcal{I}} \text{FP}_{i,m} = 0$$
+
+$$
+\sum_{i \in \mathcal{I}} \text{FP}_{i,m} = 0
+$$
 
 This ensures that funding payments are purely transfers between traders—no money is created or destroyed.
 
@@ -388,7 +409,9 @@ Margin requirements ensure that traders can cover potential losses and maintain 
 **Tiered Margin Structure:**
 Larger positions require higher margin ratios to account for increased market impact and liquidity risk:
 
-$$r^{\text{maint}}(N) = r^{\text{base}} + \alpha \cdot \log(1 + N/N_0)$$
+$$
+r^{\text{maint}}(N) = r^{\text{base}} + \alpha \cdot \log(1 + N/N_0)
+$$
 
 Where larger notional $N$ results in higher margin requirements.
 
@@ -399,7 +422,10 @@ Where larger notional $N$ results in higher margin requirements.
 ### Account Equity and Leverage
 
 **Total Account Equity:**
-$$E_i = M^C_i + \sum_{m} U_{i,m} - \sum_{m} F_{i,m}$$
+
+$$
+E_i = M^C_i + \sum_{m} U_{i,m} - \sum_{m} F_{i,m}
+$$
 
 Components:
 - $M^C_i$: Collateral value (post-haircut)
@@ -409,10 +435,16 @@ Components:
 > **Industry Standard:** Universal formula. Some exchanges separate "wallet balance" from "margin balance" for UI purposes, but underlying calculation is identical.
 
 **Margin Ratio:**
-$$\text{MR}_i = \frac{E_i}{\sum_{m} N_{i,m}}$$
+
+$$
+\text{MR}_i = \frac{E_i}{\sum_{m} N_{i,m}}
+$$
 
 **Effective Leverage:**
-$$\lambda_i = \frac{\sum_{m} N_{i,m}}{E_i} = \frac{1}{\text{MR}_i}$$
+
+$$
+\lambda_i = \frac{\sum_{m} N_{i,m}}{E_i} = \frac{1}{\text{MR}_i}
+$$
 
 > **Industry Standard:** Standard definitions. Most exchanges display both metrics. Some show "buying power" (available leverage) rather than current leverage.
 
@@ -449,7 +481,10 @@ $$\lambda_i = \frac{\sum_{m} N_{i,m}}{E_i} = \frac{1}{\text{MR}_i}$$
 Liquidation occurs when an account's equity falls below the maintenance margin requirement:
 
 **Liquidation Trigger:**
-$$E_i \leq \text{MM}_i$$
+
+$$
+E_i \leq \text{MM}_i
+$$
 
 Where $\text{MM}_i = \sum_{m} N_{i,m} \cdot r^{\text{maint}}_m(N_{i,m})$
 
@@ -463,7 +498,10 @@ Where $\text{MM}_i = \sum_{m} N_{i,m} \cdot r^{\text{maint}}_m(N_{i,m})$
 The system attempts to close the minimum position size necessary to restore account health:
 
 **Objective:** Find minimal $\phi \in (0,1]$ such that:
-$$\frac{E^{\text{post}}_i(\phi)}{\sum_m N^{\text{post}}_{i,m}(\phi)} > r^{\text{maint,target}}$$
+
+$$
+\frac{E^{\text{post}}_i(\phi)}{\sum_m N^{\text{post}}_{i,m}(\phi)} > r^{\text{maint,target}}
+$$
 
  > **Industry Standard:** **Partial liquidation:** BitMEX, dYdX, Hyperliquid (sophisticated risk management). **Full liquidation:** Binance, Bybit (simpler implementation). **Hybrid:** Some exchanges attempt partial first, then full if insufficient. Partial liquidation reduces trader losses and market impact.
  > 
@@ -482,7 +520,10 @@ Liquidation penalties serve multiple purposes:
 - Contribute to the insurance fund
 
 **Penalty Calculation:**
-$$\text{Penalty} = \gamma_m \times \text{Liquidated Notional}$$
+
+$$
+\text{Penalty} = \gamma_m \times \text{Liquidated Notional}
+$$
 
 Where $\gamma_m$ is the penalty rate for market $m$ (typically 0.5-2.5%).
 
@@ -517,7 +558,10 @@ When a trader's equity becomes negative after liquidation:
 When the insurance fund is insufficient, **Auto-Deleveraging** socializes losses among profitable traders on the opposite side.
 
 **ADL Ranking Score:**
-$$S_{i,m} = \text{sign}(U_{i,m}) \times \sqrt{\frac{|U_{i,m}|}{E_i}}$$
+
+$$
+S_{i,m} = \text{sign}(U_{i,m}) \times \sqrt{\frac{|U_{i,m}|}{E_i}}
+$$
 
 This prioritizes traders with:
 - Higher profitability (larger $|U_{i,m}|$)
@@ -659,44 +703,80 @@ Four critical invariants ensure system integrity:
 - **Realized PnL:** $\text{RPnL} = Q^{\text{realized}} \cdot \text{sign}(Q^{\text{before}}) \cdot (P^{\text{exec}} - \bar{P}^E)$
 
 **Account Equity:**
-$$E_i = M^C_i + \sum_{m} U_{i,m} - \sum_{m} F_{i,m}$$
+
+$$
+E_i = M^C_i + \sum_{m} U_{i,m} - \sum_{m} F_{i,m}
+$$
 
 **Collateral Value (Multi-Asset):**
-$$M^C_i = \sum_{k} C_{i,k} \cdot P^C_k \cdot (1-h_k)$$
+
+$$
+M^C_i = \sum_{k} C_{i,k} \cdot P^C_k \cdot (1-h_k)
+$$
 
 ### Price Discovery Formulas
 
 **Time-Weighted Average Price:**
-$$\text{TWAP}(X, W) = \frac{1}{\min(W, t+1)}\sum_{k=0}^{\min(W-1, t)} X_{t-k}$$
+
+$$
+\text{TWAP}(X, W) = \frac{1}{\min(W, t+1)}\sum_{k=0}^{\min(W-1, t)} X_{t-k}
+$$
 
 **Mark Price (Oracle-Anchored):**
-$$P^M_m = (1-\beta) P^I_m + \beta \cdot \text{TWAP}(P^L_m, W)$$
+
+$$
+P^M_m = (1-\beta) P^I_m + \beta \cdot \text{TWAP}(P^L_m, W)
+$$
 
 **Mark Price (Impact Bid/Ask):**
-$$P^M_m = P^I_m + \text{clamp}\left(\frac{P^{\text{bid}}_m + P^{\text{ask}}_m}{2} - P^I_m, -\delta^{\max}_m, +\delta^{\max}_m\right)$$
+
+$$
+P^M_m = P^I_m + \text{clamp}\left(\frac{P^{\text{bid}}_m + P^{\text{ask}}_m}{2} - P^I_m, -\delta^{\max}_m, +\delta^{\max}_m\right)
+$$
 
 ### Funding Mechanism Formulas
 
 **Premium Component:**
-$$P_m = \frac{P^M_m - P^I_m}{P^I_m}$$
+
+$$
+P_m = \frac{P^M_m - P^I_m}{P^I_m}
+$$
 
 **Interest Rate Component:**
-$$I_m = \frac{r^{\text{quote}} - r^{\text{base}}}{n}$$
+
+$$
+I_m = \frac{r^{\text{quote}} - r^{\text{base}}}{n}
+$$
 
 **Funding Rate:**
-$$f_m = \text{clamp}(P_m + I_m, -f^{\max}_m, +f^{\max}_m)$$
+
+$$
+f_m = \text{clamp}(P_m + I_m, -f^{\max}_m, +f^{\max}_m)
+$$
 
 **Funding Payment:**
-$$\text{FP}_{i,m} = \text{sign}(Q_{i,m}) \cdot |Q_{i,m}| \cdot P^M_m \cdot f_m$$
+
+$$
+\text{FP}_{i,m} = \text{sign}(Q_{i,m}) \cdot |Q_{i,m}| \cdot P^M_m \cdot f_m
+$$
 
 **Funding Accrual:**
-$$F_{i,m}^{\text{new}} = F_{i,m} + \text{FP}_{i,m}$$
+
+$$
+F_{i,m}^{\text{new}} = F_{i,m} + \text{FP}_{i,m}
+$$
 
 ### Risk Management Formulas
 
 **Margin Requirements:**
-$$\text{IM}_i = \sum_{m} N_{i,m} \cdot r^{\text{init}}_m(N_{i,m})$$
-$$\text{MM}_i = \sum_{m} N_{i,m} \cdot r^{\text{maint}}_m(N_{i,m})$$
+
+$$
+\text{IM}_i = \sum_{m} N_{i,m} \cdot r^{\text{init}}_m(N_{i,m})
+$$
+
+$$
+\text{MM}_i = \sum_{m} N_{i,m} \cdot r^{\text{maint}}_m(N_{i,m})
+$$
 
 **Margin Ratio:**
 $$\text{MR}_i = \begin{cases}
@@ -713,38 +793,68 @@ $$\lambda_i = \begin{cases}
 \end{cases}$$
 
 **Dynamic Margin Curves:**
-$$r^{\text{maint}}(N) = a + b \log(1 + N/N_0)$$
+
+$$
+r^{\text{maint}}(N) = a + b \log(1 + N/N_0)
+$$
 
 ### Liquidation Formulas
 
 **Liquidation Trigger:**
-$$E_i \leq \text{MM}_i \quad \Leftrightarrow \quad \text{MR}_i \leq \frac{\text{MM}_i}{\sum_m N_{i,m}}$$
+
+$$
+E_i \leq \text{MM}_i \quad \Leftrightarrow \quad \text{MR}_i \leq \frac{\text{MM}_i}{\sum_m N_{i,m}}
+$$
 
 **Partial Liquidation Target:**
-$$\text{MR}^{\text{post}}_i(\phi) = \frac{E^{\text{post}}_i(\phi)}{\sum_m N^{\text{post}}_{i,m}(\phi)} > r^{\text{maint,target}}$$
+
+$$
+\text{MR}^{\text{post}}_i(\phi) = \frac{E^{\text{post}}_i(\phi)}{\sum_m N^{\text{post}}_{i,m}(\phi)} > r^{\text{maint,target}}
+$$
 
 **Liquidation Penalty:**
-$$\text{Penalty} = \gamma_m \times \phi \times |Q_{i,m}| \times P^M_m$$
+
+$$
+\text{Penalty} = \gamma_m \times \phi \times |Q_{i,m}| \times P^M_m
+$$
 
 **Insurance Fund Evolution:**
-$$\mathcal{I}^{\text{new}} = \mathcal{I} + \min(0, E^{\text{post}}_i)$$
+
+$$
+\mathcal{I}^{\text{new}} = \mathcal{I} + \min(0, E^{\text{post}}_i)
+$$
 
 **ADL Ranking Score:**
-$$S_{i,m} = \text{sign}(U_{i,m}) \times \sqrt{\frac{|U_{i,m}|}{E_i}}$$
+
+$$
+S_{i,m} = \text{sign}(U_{i,m}) \times \sqrt{\frac{|U_{i,m}|}{E_i}}
+$$
 
 ### System Invariants
 
 **Exposure Parity:**
-$$\sum_{i \in \mathcal{I}} Q_{i,m} = 0 \quad \forall m$$
+
+$$
+\sum_{i \in \mathcal{I}} Q_{i,m} = 0 \quad \forall m
+$$
 
 **Funding Conservation:**
-$$\sum_{i \in \mathcal{I}} \text{FP}_{i,m} = 0 \quad \forall m$$
+
+$$
+\sum_{i \in \mathcal{I}} \text{FP}_{i,m} = 0 \quad \forall m
+$$
 
 **PnL Conservation:**
-$$\sum_i U_{i,m} = \left(\sum_i Q_{i,m}\right) \times (P^M_m - \bar{P}^{\text{system}}) = 0$$
+
+$$
+\sum_i U_{i,m} = \left(\sum_i Q_{i,m}\right) \times (P^M_m - \bar{P}^{\text{system}}) = 0
+$$
 
 **Ledger Conservation:**
-$$\sum_i E_i + \mathcal{I} = \text{constant} + \text{(net fees)}$$
+
+$$
+\sum_i E_i + \mathcal{I} = \text{constant} + \text{(net fees)}
+$$
 
 ---
 
@@ -1261,7 +1371,10 @@ The implementation of a perpetual futures exchange can be viewed as a **multi-di
 ### Parameter Space Definition
 
 **Complete Parameter Vector:**
-$$\boldsymbol{\theta} = (\boldsymbol{\theta}^P, \boldsymbol{\theta}^F, \boldsymbol{\theta}^R, \boldsymbol{\theta}^L, \boldsymbol{\theta}^S)$$
+
+$$
+\boldsymbol{\theta} = (\boldsymbol{\theta}^P, \boldsymbol{\theta}^F, \boldsymbol{\theta}^R, \boldsymbol{\theta}^L, \boldsymbol{\theta}^S)
+$$
 
 **Parameter Categories:**
 
@@ -1305,22 +1418,34 @@ W_m &\in [1, 3600] \text{ seconds} \quad \text{(1s to 1 hour)} \\
 **Objective Functions (Detailed):**
 
 1. **Manipulation Resistance:** 
-   $$R(\boldsymbol{\theta}^P) = \frac{1}{1 + \exp(-k_1 \delta^{\max}_m)} \cdot \frac{W_m}{W_m + k_2}$$
+
+   $$
+   R(\boldsymbol{\theta}^P) = \frac{1}{1 + \exp(-k_1 \delta^{\max}_m)} \cdot \frac{W_m}{W_m + k_2}
+   $$
    
    *Interpretation:* Smaller deviation bounds and longer TWAP windows increase resistance to price manipulation attacks.
 
 2. **Price Responsiveness:** 
-   $$S(\boldsymbol{\theta}^P) = \beta_m \cdot \frac{1}{\tau^{\text{update}} + k_3}$$
+
+   $$
+   S(\boldsymbol{\theta}^P) = \beta_m \cdot \frac{1}{\tau^{\text{update}} + k_3}
+   $$
    
    *Interpretation:* Higher market weight and faster updates improve price responsiveness to market conditions.
 
 3. **Computational Cost:** 
-   $$C(\boldsymbol{\theta}^P) = \frac{k_4}{\tau^{\text{update}}} + k_5 \cdot W_m$$
+
+   $$
+   C(\boldsymbol{\theta}^P) = \frac{k_4}{\tau^{\text{update}}} + k_5 \cdot W_m
+   $$
    
    *Interpretation:* More frequent updates and longer TWAP windows increase computational requirements.
 
 **Multi-Objective Optimization:**
-$$\max_{\boldsymbol{\theta}^P} \alpha_1 R(\boldsymbol{\theta}^P) + \alpha_2 S(\boldsymbol{\theta}^P) - \alpha_3 C(\boldsymbol{\theta}^P)$$
+
+$$
+\max_{\boldsymbol{\theta}^P} \alpha_1 R(\boldsymbol{\theta}^P) + \alpha_2 S(\boldsymbol{\theta}^P) - \alpha_3 C(\boldsymbol{\theta}^P)
+$$
 
 where $\alpha_1 + \alpha_2 + \alpha_3 = 1$ and $\alpha_i \geq 0$ represent the relative importance of each objective.
 
@@ -1353,27 +1478,39 @@ W^{\text{premium}} &\in [60, 28800] \text{ seconds} \quad \text{(1 minute to 8 h
 **Objective Functions (Detailed):**
 
 1. **Price Convergence Effectiveness:**
-   $$\text{Convergence}(\boldsymbol{\theta}^F) = \mathbb{E}\left[\left|\frac{P^M_m - P^I_m}{P^I_m}\right|\right]$$
+
+   $$
+   \text{Convergence}(\boldsymbol{\theta}^F) = \mathbb{E}\left[\left|\frac{P^M_m - P^I_m}{P^I_m}\right|\right]
+   $$
    
    *Definition:* Expected absolute percentage deviation between mark price and index price.
    *Goal:* Minimize this to keep perpetual price close to spot price.
    *Typical Values:* 0.1-1% for well-functioning systems.
 
 2. **Funding Rate Volatility:**
-   $$\text{Volatility}(\boldsymbol{\theta}^F) = \text{Var}[f_m] = \mathbb{E}[f_m^2] - (\mathbb{E}[f_m])^2$$
+
+   $$
+   \text{Volatility}(\boldsymbol{\theta}^F) = \text{Var}[f_m] = \mathbb{E}[f_m^2] - (\mathbb{E}[f_m])^2
+   $$
    
    *Definition:* Variance of funding rates over time.
    *Goal:* Minimize to provide predictable funding costs for traders.
    *Impact:* High volatility creates uncertainty and may deter long-term positions.
 
 3. **Funding Frequency Cost:**
-   $$\text{FreqCost}(\boldsymbol{\theta}^F) = \frac{k_{\text{gas}}}{\tau^{\text{fund}}} + k_{\text{complexity}} \cdot \frac{1}{W^{\text{premium}}}$$
+
+   $$
+   \text{FreqCost}(\boldsymbol{\theta}^F) = \frac{k_{\text{gas}}}{\tau^{\text{fund}}} + k_{\text{complexity}} \cdot \frac{1}{W^{\text{premium}}}
+   $$
    
    *Definition:* Cost of frequent funding operations (gas fees, computational overhead).
    *Trade-off:* More frequent funding = better tracking but higher costs.
 
 **Bi-Objective Optimization:**
-$$\min_{\boldsymbol{\theta}^F} \text{Convergence}(\boldsymbol{\theta}^F) + \lambda \cdot \text{Volatility}(\boldsymbol{\theta}^F)$$
+
+$$
+\min_{\boldsymbol{\theta}^F} \text{Convergence}(\boldsymbol{\theta}^F) + \lambda \cdot \text{Volatility}(\boldsymbol{\theta}^F)
+$$
 
 where $\lambda > 0$ is the **volatility penalty weight** that determines how much to prioritize stable funding rates vs tight price convergence.
 
@@ -1410,28 +1547,40 @@ q^{\max}_m &> 0, \quad N^{\max}_i > 0 \quad \text{(positive limits)}
 **Risk Metrics (Detailed Definitions):**
 
 1. **Expected Shortfall (Conditional VaR):**
-   $$\text{ES}_\alpha(\boldsymbol{\theta}^R) = \mathbb{E}[\text{Loss} | \text{Loss} > \text{VaR}_\alpha(\boldsymbol{\theta}^R)]$$
+
+   $$
+   \text{ES}_\alpha(\boldsymbol{\theta}^R) = \mathbb{E}[\text{Loss} | \text{Loss} > \text{VaR}_\alpha(\boldsymbol{\theta}^R)]
+   $$
    
    *Definition:* Expected loss given that loss exceeds the $\alpha$-quantile (e.g., 99th percentile).
    *Interpretation:* Measures tail risk - how bad losses can be in extreme scenarios.
    *Typical $\alpha$:* 0.01 (1% worst-case scenarios) or 0.001 (0.1% extreme scenarios).
 
 2. **Liquidation Probability:**
-   $$P(\text{Liquidation}) = P(E_i \leq \text{MM}_i) = P\left(\frac{E_i}{\sum_m N_{i,m}} \leq r^{\text{maint}}_{\text{eff}}\right)$$
+
+   $$
+   P(\text{Liquidation}) = P(E_i \leq \text{MM}_i) = P\left(\frac{E_i}{\sum_m N_{i,m}} \leq r^{\text{maint}}_{\text{eff}}\right)
+   $$
    
    *Definition:* Probability that a trader's account will be liquidated.
    *Factors:* Lower margin requirements → higher liquidation probability.
    *Target Range:* 1-5% daily liquidation probability for typical positions.
 
 3. **Capital Efficiency:**
-   $$\text{CE}(\boldsymbol{\theta}^R) = \frac{\mathbb{E}[\text{Trading Volume}]}{\mathbb{E}[\text{Margin Required}]} = \frac{\mathbb{E}[\sum_i N_{i,m}]}{\mathbb{E}[\sum_i \text{MM}_i]}$$
+
+   $$
+   \text{CE}(\boldsymbol{\theta}^R) = \frac{\mathbb{E}[\text{Trading Volume}]}{\mathbb{E}[\text{Margin Required}]} = \frac{\mathbb{E}[\sum_i N_{i,m}]}{\mathbb{E}[\sum_i \text{MM}_i]}
+   $$
    
    *Definition:* How much trading volume is generated per dollar of margin.
    *Interpretation:* Higher efficiency means better capital utilization.
    *Trade-off:* Higher efficiency typically means higher risk.
 
 **Multi-Objective Optimization (Vector Form):**
-$$\min_{\boldsymbol{\theta}^R} \begin{pmatrix} \text{ES}_{0.01}(\boldsymbol{\theta}^R) \\ -\text{CE}(\boldsymbol{\theta}^R) \\ P(\text{Liquidation})(\boldsymbol{\theta}^R) \end{pmatrix}$$
+
+$$
+\min_{\boldsymbol{\theta}^R} \begin{pmatrix} \text{ES}_{0.01}(\boldsymbol{\theta}^R) \\ -\text{CE}(\boldsymbol{\theta}^R) \\ P(\text{Liquidation})(\boldsymbol{\theta}^R) \end{pmatrix}
+$$
 
 **Interpretation:** This seeks parameters that simultaneously:
 - Minimize tail risk (Expected Shortfall)
@@ -1467,42 +1616,60 @@ $$\min_{\boldsymbol{\theta}^R} \begin{pmatrix} \text{ES}_{0.01}(\boldsymbol{\the
 **Performance Metrics (Detailed):**
 
 1. **Trader Impact (Expected Liquidation Loss):**
-   $$\text{TI}(\boldsymbol{\theta}^L) = \mathbb{E}[\text{Loss from Liquidation}] = \mathbb{E}[\gamma_m \cdot N^{\text{liquidated}} + \text{Slippage Costs}]$$
+
+   $$
+   \text{TI}(\boldsymbol{\theta}^L) = \mathbb{E}[\text{Loss from Liquidation}] = \mathbb{E}[\gamma_m \cdot N^{\text{liquidated}} + \text{Slippage Costs}]
+   $$
    
    *Definition:* Expected dollar loss per liquidation event.
    *Components:* Penalty fees + market impact from forced selling.
    *Goal:* Minimize to reduce trader harm while maintaining system incentives.
 
 2. **System Stability (Insurance Fund Depletion Risk):**
-   $$\text{SS}(\boldsymbol{\theta}^L) = P(\mathcal{I} + \sum_{\text{bankruptcies}} E^{\text{post}}_i < 0)$$
+
+   $$
+   \text{SS}(\boldsymbol{\theta}^L) = P(\mathcal{I} + \sum_{\text{bankruptcies}} E^{\text{post}}_i < 0)
+   $$
    
    *Definition:* Probability that insurance fund becomes negative.
    *Factors:* Lower penalties → less insurance funding → higher depletion risk.
    *Target:* <1% annual probability of depletion.
 
 3. **Liquidation Efficiency:**
-   $$\text{LE}(\boldsymbol{\theta}^L) = \frac{\text{Successful Partial Liquidations}}{\text{Total Liquidations}} = \frac{N_{\text{partial success}}}{N_{\text{total}}}$$
+
+   $$
+   \text{LE}(\boldsymbol{\theta}^L) = \frac{\text{Successful Partial Liquidations}}{\text{Total Liquidations}} = \frac{N_{\text{partial success}}}{N_{\text{total}}}
+   $$
    
    *Definition:* Fraction of liquidations that successfully restore health without full closure.
    *Range:* 0 (all full liquidations) to 1 (all partial liquidations successful).
    *Goal:* Maximize to minimize trader impact.
 
 **Multi-Objective Optimization:**
-$$\min_{\boldsymbol{\theta}^L} \begin{pmatrix} \text{TI}(\boldsymbol{\theta}^L) \\ \text{SS}(\boldsymbol{\theta}^L) \\ -\text{LE}(\boldsymbol{\theta}^L) \end{pmatrix}$$
+
+$$
+\min_{\boldsymbol{\theta}^L} \begin{pmatrix} \text{TI}(\boldsymbol{\theta}^L) \\ \text{SS}(\boldsymbol{\theta}^L) \\ -\text{LE}(\boldsymbol{\theta}^L) \end{pmatrix}
+$$
 
 **Interpretation:** Find parameters that minimize trader impact and system instability while maximizing liquidation efficiency.
 
 ### 5. System-Wide Optimization Framework
 
 **Complete Parameter Vector:**
-$$\boldsymbol{\Theta} = \{\boldsymbol{\theta}^P, \boldsymbol{\theta}^F, \boldsymbol{\theta}^R, \boldsymbol{\theta}^L, \boldsymbol{\theta}^S\} \in \mathbb{R}^n$$
+
+$$
+\boldsymbol{\Theta} = \{\boldsymbol{\theta}^P, \boldsymbol{\theta}^F, \boldsymbol{\theta}^R, \boldsymbol{\theta}^L, \boldsymbol{\theta}^S\} \in \mathbb{R}^n
+$$
 
 where $n$ is the total number of parameters across all subsystems (typically $n = 50-200$ for a complete exchange).
 
 **System-Level Objective Functions (Detailed Definitions):**
 
 1. **Risk Minimization:**
-   $$J_1(\boldsymbol{\Theta}) = \mathbb{E}[\text{System Loss}] = \mathbb{E}[\max(0, -\mathcal{I} - \sum_i E^{\text{post}}_i)]$$
+
+   $$
+   J_1(\boldsymbol{\Theta}) = \mathbb{E}[\text{System Loss}] = \mathbb{E}[\max(0, -\mathcal{I} - \sum_i E^{\text{post}}_i)]
+   $$
    
    *Definition:* Expected loss to the exchange when insurance fund is insufficient.
    *Components:* Insurance fund depletion + socialized losses.
@@ -1510,14 +1677,20 @@ where $n$ is the total number of parameters across all subsystems (typically $n 
    *Target:* Minimize to ensure long-term viability.
 
 2. **Capital Efficiency:**
-   $$J_2(\boldsymbol{\Theta}) = \frac{\mathbb{E}[\text{Daily Trading Volume}]}{\mathbb{E}[\text{Total Margin Required}]} = \frac{\mathbb{E}[\sum_{i,m} |\Delta N_{i,m}|]}{\mathbb{E}[\sum_i \text{MM}_i]}$$
+
+   $$
+   J_2(\boldsymbol{\Theta}) = \frac{\mathbb{E}[\text{Daily Trading Volume}]}{\mathbb{E}[\text{Total Margin Required}]} = \frac{\mathbb{E}[\sum_{i,m} |\Delta N_{i,m}|]}{\mathbb{E}[\sum_i \text{MM}_i]}
+   $$
    
    *Definition:* Trading volume generated per dollar of margin capital.
    *Units:* Dimensionless ratio (higher = more efficient).
    *Interpretation:* Measures how effectively the system converts margin into trading activity.
 
 3. **User Experience Score:**
-   $$J_3(\boldsymbol{\Theta}) = w_s \cdot \mathbb{E}[\text{Slippage}] + w_f \cdot \mathbb{E}[\text{Total Fees}] + w_l \cdot \mathbb{E}[\text{Liquidation Impact}]$$
+
+   $$
+   J_3(\boldsymbol{\Theta}) = w_s \cdot \mathbb{E}[\text{Slippage}] + w_f \cdot \mathbb{E}[\text{Total Fees}] + w_l \cdot \mathbb{E}[\text{Liquidation Impact}]
+   $$
    
    *Definition:* Weighted combination of user friction factors.
    *Components:*
@@ -1527,14 +1700,20 @@ where $n$ is the total number of parameters across all subsystems (typically $n 
    *Goal:* Minimize to improve trader satisfaction and retention.
 
 4. **Operational Cost:**
-   $$J_4(\boldsymbol{\Theta}) = C_{\text{compute}}(\tau^{\text{update}}, W_m) + C_{\text{infra}}(\text{TPS}) + C_{\text{oracle}}(\text{feed frequency})$$
+
+   $$
+   J_4(\boldsymbol{\Theta}) = C_{\text{compute}}(\tau^{\text{update}}, W_m) + C_{\text{infra}}(\text{TPS}) + C_{\text{oracle}}(\text{feed frequency})
+   $$
    
    *Definition:* Total operational cost per time period.
    *Components:* Computational resources + infrastructure + external data costs.
    *Units:* USD per day/month.
 
 **Weighted Multi-Objective Formulation:**
-$$\min_{\boldsymbol{\Theta} \in \Theta} \sum_{i=1}^{4} w_i J_i(\boldsymbol{\Theta})$$
+
+$$
+\min_{\boldsymbol{\Theta} \in \Theta} \sum_{i=1}^{4} w_i J_i(\boldsymbol{\Theta})
+$$
 
 where $\sum_{i=1}^{4} w_i = 1$ and $w_i \geq 0$ are **preference weights** that reflect exchange priorities:
 
@@ -1546,12 +1725,18 @@ where $\sum_{i=1}^{4} w_i = 1$ and $w_i \geq 0$ are **preference weights** that 
 **System Constraints (Detailed):**
 
 1. **Solvency Constraint:**
-   $$P(\text{System Bankruptcy}) = P(\mathcal{I} + \sum_{\text{all bankruptcies}} E^{\text{post}}_i < 0) \leq \epsilon_{\text{risk}}$$
+
+   $$
+   P(\text{System Bankruptcy}) = P(\mathcal{I} + \sum_{\text{all bankruptcies}} E^{\text{post}}_i < 0) \leq \epsilon_{\text{risk}}
+   $$
    
    *Interpretation:* Probability of system insolvency must be below acceptable threshold (e.g., $\epsilon_{\text{risk}} = 0.01$ for 1% annual risk).
 
 2. **Performance Constraints:**
-   $$\text{Latency}(\boldsymbol{\theta}^S) \leq L_{\max}, \quad \text{Throughput}(\boldsymbol{\theta}^S) \geq T_{\min}$$
+
+   $$
+   \text{Latency}(\boldsymbol{\theta}^S) \leq L_{\max}, \quad \text{Throughput}(\boldsymbol{\theta}^S) \geq T_{\min}
+   $$
    
    *Definition:* System must meet minimum performance standards.
    *Typical Values:* $L_{\max} = 100$ms, $T_{\min} = 1000$ TPS for DEX.
@@ -1592,19 +1777,31 @@ $$\mathbf{S} = \begin{pmatrix}
    - **Implication:** Require careful balance based on exchange priorities
 
 **Sensitivity Thresholds:**
-$$\sigma_{\text{high}} = \text{95th percentile of } \|\mathbf{S}_{:,j}\|_2$$
-$$\sigma_{\text{low}} = \text{25th percentile of } \|\mathbf{S}_{:,j}\|_2$$
+
+$$
+\sigma_{\text{high}} = \text{95th percentile of } \|\mathbf{S}_{:,j}\|_2
+$$
+
+$$
+\sigma_{\text{low}} = \text{25th percentile of } \|\mathbf{S}_{:,j}\|_2
+$$
 
 ### 7. Pareto Frontier Analysis
 
 **Pareto Frontier Definition:**
-$$\mathcal{F} = \{\boldsymbol{\theta} \in \Theta : \nexists \boldsymbol{\theta}' \in \Theta \text{ s.t. } J_i(\boldsymbol{\theta}') \leq J_i(\boldsymbol{\theta}) \forall i \text{ and } J_j(\boldsymbol{\theta}') < J_j(\boldsymbol{\theta}) \text{ for some } j\}$$
+
+$$
+\mathcal{F} = \{\boldsymbol{\theta} \in \Theta : \nexists \boldsymbol{\theta}' \in \Theta \text{ s.t. } J_i(\boldsymbol{\theta}') \leq J_i(\boldsymbol{\theta}) \forall i \text{ and } J_j(\boldsymbol{\theta}') < J_j(\boldsymbol{\theta}) \text{ for some } j\}
+$$
 
 **Plain English:** The Pareto frontier contains all parameter configurations where you cannot improve any objective without making at least one other objective worse.
 
 **Two-Dimensional Risk-Efficiency Frontier:**
 For visualization, consider the simplified case:
-$$\mathcal{F}_{1,2} = \{\boldsymbol{\theta} : \nexists \boldsymbol{\theta}' \text{ s.t. } J_1(\boldsymbol{\theta}') \leq J_1(\boldsymbol{\theta}) \text{ and } J_2(\boldsymbol{\theta}') > J_2(\boldsymbol{\theta})\}$$
+
+$$
+\mathcal{F}_{1,2} = \{\boldsymbol{\theta} : \nexists \boldsymbol{\theta}' \text{ s.t. } J_1(\boldsymbol{\theta}') \leq J_1(\boldsymbol{\theta}) \text{ and } J_2(\boldsymbol{\theta}') > J_2(\boldsymbol{\theta})\}
+$$
 
 **Exchange Positioning on Frontier:**
 
@@ -1623,7 +1820,10 @@ $$\mathcal{F}_{1,2} = \{\boldsymbol{\theta} : \nexists \boldsymbol{\theta}' \tex
 ### 8. Dynamic Parameter Adjustment
 
 **Adaptive Parameter Framework:**
-$$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t + \eta_t \nabla_{\boldsymbol{\theta}} J(\boldsymbol{\theta}_t, \mathcal{D}_t)$$
+
+$$
+\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t + \eta_t \nabla_{\boldsymbol{\theta}} J(\boldsymbol{\theta}_t, \mathcal{D}_t)
+$$
 
 **Variable Definitions:**
 
@@ -1635,7 +1835,10 @@ $$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t + \eta_t \nabla_{\boldsymbol
 | **Objective Gradient** | $\nabla_{\boldsymbol{\theta}} J$ | Partial derivatives of objective w.r.t. parameters | Direction of steepest improvement |
 
 **Learning Rate Schedule:**
-$$\eta_t = \eta_0 \cdot \exp(-\lambda_{\text{decay}} \cdot t) \quad \text{(exponential decay)}$$
+
+$$
+\eta_t = \eta_0 \cdot \exp(-\lambda_{\text{decay}} \cdot t) \quad \text{(exponential decay)}
+$$
 
 *Rationale:* Start with larger updates when system is new, reduce as system matures and optimal parameters are found.
 
@@ -1677,30 +1880,48 @@ $$\eta_t = \eta_0 \cdot \exp(-\lambda_{\text{decay}} \cdot t) \quad \text{(expon
 **Value at Risk (VaR) Framework:**
 
 **VaR Definition:**
-$$\text{VaR}_\alpha(\boldsymbol{\theta}) = \inf\{L : P(\text{System Loss} \leq L | \boldsymbol{\theta}) \geq 1-\alpha\}$$
+
+$$
+\text{VaR}_\alpha(\boldsymbol{\theta}) = \inf\{L : P(\text{System Loss} \leq L | \boldsymbol{\theta}) \geq 1-\alpha\}
+$$
 
 *Plain English:* VaR is the maximum expected loss at confidence level $(1-\alpha)$. For example, VaR₀.₀₁ is the worst loss expected 99% of the time.
 
 **VaR Constraint:**
-$$P\left(\sum_i \text{Loss}_i > \text{VaR}_\alpha(\boldsymbol{\theta})\right) \leq \alpha$$
+
+$$
+P\left(\sum_i \text{Loss}_i > \text{VaR}_\alpha(\boldsymbol{\theta})\right) \leq \alpha
+$$
 
 *Interpretation:* The probability of losses exceeding VaR should not exceed $\alpha$ (e.g., 1% for $\alpha = 0.01$).
 
 **Expected Shortfall (Conditional VaR):**
-$$\text{ES}_\alpha(\boldsymbol{\theta}) = \mathbb{E}[\text{Loss} | \text{Loss} > \text{VaR}_\alpha(\boldsymbol{\theta})]$$
+
+$$
+\text{ES}_\alpha(\boldsymbol{\theta}) = \mathbb{E}[\text{Loss} | \text{Loss} > \text{VaR}_\alpha(\boldsymbol{\theta})]
+$$
 
 **ES Constraint:**
-$$\text{ES}_\alpha(\boldsymbol{\theta}) \leq \text{ES}_{\max}$$
+
+$$
+\text{ES}_\alpha(\boldsymbol{\theta}) \leq \text{ES}_{\max}
+$$
 
 *Interpretation:* Even in the worst-case scenarios (beyond VaR), losses must be bounded by $\text{ES}_{\max}$.
 
 **Stress Testing Framework:**
 
 **Scenario Set Definition:**
-$$\mathcal{S} = \{s_1, s_2, \ldots, s_k\} = \{\text{Black Swan}, \text{Liquidity Crisis}, \text{Oracle Failure}, \text{Funding Spiral}\}$$
+
+$$
+\mathcal{S} = \{s_1, s_2, \ldots, s_k\} = \{\text{Black Swan}, \text{Liquidity Crisis}, \text{Oracle Failure}, \text{Funding Spiral}\}
+$$
 
 **Stress Test Constraint:**
-$$\max_{s \in \mathcal{S}} \text{System Loss}(s, \boldsymbol{\theta}) \leq L_{\text{stress}}$$
+
+$$
+\max_{s \in \mathcal{S}} \text{System Loss}(s, \boldsymbol{\theta}) \leq L_{\text{stress}}
+$$
 
 **Specific Stress Scenarios:**
 
@@ -1725,12 +1946,18 @@ $$\max_{s \in \mathcal{S}} \text{System Loss}(s, \boldsymbol{\theta}) \leq L_{\t
    - System loss = Reduced trading volume and revenue
 
 **Stress Test Optimization:**
-$$\boldsymbol{\theta}^* = \arg\min_{\boldsymbol{\theta}} J(\boldsymbol{\theta}) \text{ subject to } \max_{s \in \mathcal{S}} \text{Loss}(s, \boldsymbol{\theta}) \leq L_{\text{stress}}$$
+
+$$
+\boldsymbol{\theta}^* = \arg\min_{\boldsymbol{\theta}} J(\boldsymbol{\theta}) \text{ subject to } \max_{s \in \mathcal{S}} \text{Loss}(s, \boldsymbol{\theta}) \leq L_{\text{stress}}
+$$
 
 ### 10. Parameter Interdependencies
 
 **Correlation Matrix Definition:**
-$$\mathbf{C}_{ij} = \text{Corr}\left(\frac{\partial \text{System Metrics}}{\partial \theta_i}, \frac{\partial \text{System Metrics}}{\partial \theta_j}\right)$$
+
+$$
+\mathbf{C}_{ij} = \text{Corr}\left(\frac{\partial \text{System Metrics}}{\partial \theta_i}, \frac{\partial \text{System Metrics}}{\partial \theta_j}\right)
+$$
 
 **Matrix Interpretation:**
 - **Diagonal Elements:** $C_{ii} = 1$ (parameter correlates perfectly with itself)
@@ -1741,7 +1968,10 @@ $$\mathbf{C}_{ij} = \text{Corr}\left(\frac{\partial \text{System Metrics}}{\part
 **Critical Parameter Interdependencies (Detailed Analysis):**
 
 1. **Margin-Funding Coupling:**
-   $$r^{\text{maint}}_m = \alpha \cdot \frac{\sigma_m}{f^{\max}_m} + \beta$$
+
+   $$
+   r^{\text{maint}}_m = \alpha \cdot \frac{\sigma_m}{f^{\max}_m} + \beta
+   $$
    
    **Mathematical Relationship:**
    - $\sigma_m$: Asset volatility
@@ -1753,7 +1983,10 @@ $$\mathbf{C}_{ij} = \text{Corr}\left(\frac{\partial \text{System Metrics}}{\part
    - dYdX: $f^{\max} = 0.075$, $r^{\text{maint}} = 0.03$ (7.5% and 3% - loose funding, higher margin)
 
 2. **Liquidity-Risk Relationship:**
-   $$\gamma_m = \gamma_0 + \frac{k}{\text{Market Depth}_m^{\alpha}}$$
+
+   $$
+   \gamma_m = \gamma_0 + \frac{k}{\text{Market Depth}_m^{\alpha}}
+   $$
    
    **Mathematical Relationship:**
    - $\gamma_0$: Base penalty rate
@@ -1765,7 +1998,10 @@ $$\mathbf{C}_{ij} = \text{Corr}\left(\frac{\partial \text{System Metrics}}{\part
    - Long-tail assets: Shallow liquidity → $\gamma = 0.025$ (2.5%)
 
 3. **Performance-Risk Trade-off:**
-   $$\text{Risk Score} = \frac{k_1}{\tau^{\text{update}}} + k_2 \cdot \text{Latency}$$
+
+   $$
+   \text{Risk Score} = \frac{k_1}{\tau^{\text{update}}} + k_2 \cdot \text{Latency}
+   $$
    
    **Mathematical Relationship:**
    - Faster updates ($\tau^{\text{update}} \downarrow$) → Lower risk but higher latency
@@ -1774,12 +2010,18 @@ $$\mathbf{C}_{ij} = \text{Corr}\left(\frac{\partial \text{System Metrics}}{\part
 4. **Cross-System Dependencies:**
    
    **Funding-Liquidation Coupling:**
-   $$\phi^{\text{target}} = 1.2 + 0.5 \cdot \frac{f^{\max}_m}{0.02}$$
+
+   $$
+   \phi^{\text{target}} = 1.2 + 0.5 \cdot \frac{f^{\max}_m}{0.02}
+   $$
    
    *Logic:* Higher funding caps create more volatility, requiring higher liquidation targets for stability.
    
    **Oracle-Margin Dependency:**
-   $$r^{\text{init}}_m = r_{\text{base}} + k \cdot \text{Oracle Uncertainty}_m$$
+
+   $$
+   r^{\text{init}}_m = r_{\text{base}} + k \cdot \text{Oracle Uncertainty}_m
+   $$
    
    *Logic:* Less reliable oracles require higher margins to account for pricing uncertainty.
 
@@ -1807,7 +2049,10 @@ f^max       -0.8    1.0  -0.2    0.6      0.2
 **When to Use:** Initial parameter exploration, handling discrete parameters, robust global optimization.
 
 **Chromosome Representation:**
-$$\boldsymbol{\theta} = [r^{\text{init}}_1, r^{\text{maint}}_1, \ldots, f^{\max}_1, \ldots, \gamma_1, \ldots] \in \mathbb{R}^n$$
+
+$$
+\boldsymbol{\theta} = [r^{\text{init}}_1, r^{\text{maint}}_1, \ldots, f^{\max}_1, \ldots, \gamma_1, \ldots] \in \mathbb{R}^n
+$$
 
 **Encoding Scheme:**
 - **Real-valued genes:** Direct parameter values
@@ -1815,10 +2060,16 @@ $$\boldsymbol{\theta} = [r^{\text{init}}_1, r^{\text{maint}}_1, \ldots, f^{\max}
 - **Population size:** $N_{\text{pop}} = 50-200$ individuals
 
 **Fitness Functions (Detailed):**
-$$F_i(\boldsymbol{\theta}) = -J_i(\boldsymbol{\theta}) + \text{penalty}(\boldsymbol{\theta})$$
+
+$$
+F_i(\boldsymbol{\theta}) = -J_i(\boldsymbol{\theta}) + \text{penalty}(\boldsymbol{\theta})
+$$
 
 where:
-$$\text{penalty}(\boldsymbol{\theta}) = \sum_{j} \max(0, \theta_j - \theta_j^{\max}) + \sum_{j} \max(0, \theta_j^{\min} - \theta_j)$$
+
+$$
+\text{penalty}(\boldsymbol{\theta}) = \sum_{j} \max(0, \theta_j - \theta_j^{\max}) + \sum_{j} \max(0, \theta_j^{\min} - \theta_j)
+$$
 
 **Selection Mechanism (Tournament Selection):**
 $$P(\text{selection of } \boldsymbol{\theta}_i) = \frac{\exp\left(\sum_{j=1}^{4} w_j F_j(\boldsymbol{\theta}_i)\right)}{\sum_{k=1}^{N_{\text{pop}}} \exp\left(\sum_{j=1}^{4} w_j F_j(\boldsymbol{\theta}_k)\right)}$$
@@ -1833,7 +2084,10 @@ $$P(\text{selection of } \boldsymbol{\theta}_i) = \frac{\exp\left(\sum_{j=1}^{4}
 **When to Use:** Fine-tuning around known good parameters, expensive objective function evaluations, sequential optimization.
 
 **Gaussian Process Model:**
-$$J(\boldsymbol{\theta}) \sim \mathcal{GP}(\mu(\boldsymbol{\theta}), k(\boldsymbol{\theta}, \boldsymbol{\theta}'))$$
+
+$$
+J(\boldsymbol{\theta}) \sim \mathcal{GP}(\mu(\boldsymbol{\theta}), k(\boldsymbol{\theta}, \boldsymbol{\theta}'))
+$$
 
 **Components Explained:**
 - **Mean Function:** $\mu(\boldsymbol{\theta}) = \mathbb{E}[J(\boldsymbol{\theta})]$ (prior belief about objective)
@@ -1841,7 +2095,10 @@ $$J(\boldsymbol{\theta}) \sim \mathcal{GP}(\mu(\boldsymbol{\theta}), k(\boldsymb
 - **Common Kernel:** $k(\boldsymbol{\theta}, \boldsymbol{\theta}') = \sigma_f^2 \exp\left(-\frac{\|\boldsymbol{\theta} - \boldsymbol{\theta}'\|^2}{2\ell^2}\right)$ (RBF kernel)
 
 **Acquisition Function (Expected Improvement):**
-$$\text{EI}(\boldsymbol{\theta}) = \mathbb{E}[\max(J^* - J(\boldsymbol{\theta}), 0)] = (\mu^* - \mu(\boldsymbol{\theta})) \Phi(Z) + \sigma(\boldsymbol{\theta}) \phi(Z)$$
+
+$$
+\text{EI}(\boldsymbol{\theta}) = \mathbb{E}[\max(J^* - J(\boldsymbol{\theta}), 0)] = (\mu^* - \mu(\boldsymbol{\theta})) \Phi(Z) + \sigma(\boldsymbol{\theta}) \phi(Z)
+$$
 
 where:
 - $J^* = \min_{\boldsymbol{\theta}'} \mu(\boldsymbol{\theta}')$ (current best estimate)
@@ -1872,12 +2129,18 @@ where:
 **Lyapunov Stability Theory for Funding System:**
 
 **Energy Function Definition:**
-$$V(\boldsymbol{x}) = \frac{1}{2}(P^M_m - P^I_m)^2$$
+
+$$
+V(\boldsymbol{x}) = \frac{1}{2}(P^M_m - P^I_m)^2
+$$
 
 **Physical Interpretation:** $V(\boldsymbol{x})$ represents the "energy" of price deviation. Stable systems should dissipate this energy over time.
 
 **Stability Condition:**
-$$\frac{dV}{dt} = (P^M_m - P^I_m) \cdot \frac{d(P^M_m - P^I_m)}{dt} < 0$$
+
+$$
+\frac{dV}{dt} = (P^M_m - P^I_m) \cdot \frac{d(P^M_m - P^I_m)}{dt} < 0
+$$
 
 **Mathematical Proof of Convergence:**
 If $\frac{dV}{dt} < 0$ whenever $V > 0$, then $V(t) \to 0$ as $t \to \infty$, which implies $P^M_m \to P^I_m$.
@@ -1897,7 +2160,10 @@ If $\frac{dV}{dt} < 0$ whenever $V > 0$, then $V(t) \to 0$ as $t \to \infty$, wh
 **Monte Carlo Simulation Framework:**
 
 **Robustness Score Definition:**
-$$\text{Robustness}(\boldsymbol{\theta}) = \frac{1}{N} \sum_{i=1}^{N} \mathbf{1}[\text{System Stable}_i(\boldsymbol{\theta})]$$
+
+$$
+\text{Robustness}(\boldsymbol{\theta}) = \frac{1}{N} \sum_{i=1}^{N} \mathbf{1}[\text{System Stable}_i(\boldsymbol{\theta})]
+$$
 
 **Simulation Components:**
 - **$N$:** Number of simulation runs (typically $N = 10,000-100,000$)
@@ -1953,7 +2219,10 @@ For each simulation run i:
 #### 13.1 Parameter Initialization
 
 **Conservative Initialization Strategy:**
-$$\boldsymbol{\theta}_0 = \arg\min_{\boldsymbol{\theta}} J_1(\boldsymbol{\theta}) \text{ subject to } J_2(\boldsymbol{\theta}) \geq J_2^{\min}$$
+
+$$
+\boldsymbol{\theta}_0 = \arg\min_{\boldsymbol{\theta}} J_1(\boldsymbol{\theta}) \text{ subject to } J_2(\boldsymbol{\theta}) \geq J_2^{\min}
+$$
 
 **Interpretation:** Start with parameters that minimize risk (objective $J_1$) while maintaining minimum acceptable capital efficiency ($J_2^{\min}$).
 
@@ -1964,10 +2233,16 @@ $$\boldsymbol{\theta}_0 = \arg\min_{\boldsymbol{\theta}} J_1(\boldsymbol{\theta}
 4. **Deploy with monitoring:** Implement with enhanced monitoring during initial phase
 
 **Gradual Optimization Process:**
-$$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t + \epsilon_t \nabla J(\boldsymbol{\theta}_t)$$
+
+$$
+\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t + \epsilon_t \nabla J(\boldsymbol{\theta}_t)
+$$
 
 **Learning Rate Schedule:**
-$$\epsilon_t = \epsilon_0 \cdot \left(\frac{t_0}{t_0 + t}\right)^{\alpha}$$
+
+$$
+\epsilon_t = \epsilon_0 \cdot \left(\frac{t_0}{t_0 + t}\right)^{\alpha}
+$$
 
 where:
 - $\epsilon_0$: Initial learning rate (e.g., 0.1)
@@ -1992,13 +2267,22 @@ where:
 **Hypothesis Testing Framework:**
 
 **Null Hypothesis:**
-$$H_0: J(\boldsymbol{\theta}_A) = J(\boldsymbol{\theta}_B) \quad \text{(no difference in performance)}$$
+
+$$
+H_0: J(\boldsymbol{\theta}_A) = J(\boldsymbol{\theta}_B) \quad \text{(no difference in performance)}
+$$
 
 **Alternative Hypothesis:**
-$$H_1: J(\boldsymbol{\theta}_A) \neq J(\boldsymbol{\theta}_B) \quad \text{(significant difference exists)}$$
+
+$$
+H_1: J(\boldsymbol{\theta}_A) \neq J(\boldsymbol{\theta}_B) \quad \text{(significant difference exists)}
+$$
 
 **Test Statistic (Welch's t-test):**
-$$t = \frac{\bar{J}_A - \bar{J}_B}{\sqrt{\frac{s_A^2}{n_A} + \frac{s_B^2}{n_B}}}$$
+
+$$
+t = \frac{\bar{J}_A - \bar{J}_B}{\sqrt{\frac{s_A^2}{n_A} + \frac{s_B^2}{n_B}}}
+$$
 
 where:
 - $\bar{J}_A, \bar{J}_B$: Sample means of objective function
@@ -2006,10 +2290,16 @@ where:
 - $n_A, n_B$: Sample sizes
 
 **Statistical Power Analysis:**
-$$\text{Power} = P(\text{Reject } H_0 | H_1 \text{ is true}) = 1 - \beta$$
+
+$$
+\text{Power} = P(\text{Reject } H_0 | H_1 \text{ is true}) = 1 - \beta
+$$
 
 **Required Sample Size:**
-$$n = \frac{2(z_{\alpha/2} + z_\beta)^2 \sigma^2}{\delta^2}$$
+
+$$
+n = \frac{2(z_{\alpha/2} + z_\beta)^2 \sigma^2}{\delta^2}
+$$
 
 where $\delta$ is the minimum detectable effect size.
 
@@ -2027,12 +2317,17 @@ where $\delta$ is the minimum detectable effect size.
 
 **Feasible Region Definition:** The set of all parameter combinations that satisfy system constraints and maintain operational viability.
 
-$$\Theta_{\text{feasible}} = \{\boldsymbol{\theta} : \text{all constraints satisfied}\}$$
+$$
+\Theta_{\text{feasible}} = \{\boldsymbol{\theta} : \text{all constraints satisfied}\}
+$$
 
 #### 14.1 Feasibility Constraints (Detailed)
 
 **1. System Solvency Constraint:**
-$$\mathbb{E}[\text{Insurance Fund}] \geq k \cdot \text{VaR}_{0.001}(\text{System Loss})$$
+
+$$
+\mathbb{E}[\text{Insurance Fund}] \geq k \cdot \text{VaR}_{0.001}(\text{System Loss})
+$$
 
 **Variable Definitions:**
 - $\mathbb{E}[\text{Insurance Fund}]$: Expected insurance fund balance
@@ -2042,7 +2337,10 @@ $$\mathbb{E}[\text{Insurance Fund}] \geq k \cdot \text{VaR}_{0.001}(\text{System
 **Interpretation:** Insurance fund must be large enough to cover extreme losses with high confidence. Higher $k$ values provide more safety buffer.
 
 **2. Liquidity Constraints:**
-$$\sum_i N_{i,m} \leq L_m \cdot \text{Market Depth}_m$$
+
+$$
+\sum_i N_{i,m} \leq L_m \cdot \text{Market Depth}_m
+$$
 
 **Variable Definitions:**
 - $\sum_i N_{i,m}$: Total open interest in market $m$
@@ -2052,13 +2350,22 @@ $$\sum_i N_{i,m} \leq L_m \cdot \text{Market Depth}_m$$
 **Interpretation:** Total positions cannot exceed a fraction of available market liquidity to ensure orderly liquidations are possible.
 
 **3. Performance Constraints:**
-$$\text{Latency}(\boldsymbol{\theta}^S) \leq L_{\max}, \quad \text{Throughput}(\boldsymbol{\theta}^S) \geq T_{\min}$$
+
+$$
+\text{Latency}(\boldsymbol{\theta}^S) \leq L_{\max}, \quad \text{Throughput}(\boldsymbol{\theta}^S) \geq T_{\min}
+$$
 
 **Latency Function:**
-$$\text{Latency}(\boldsymbol{\theta}^S) = \frac{1}{\tau^{\text{update}}} + f(\text{TWAP window}, \text{Oracle calls})$$
+
+$$
+\text{Latency}(\boldsymbol{\theta}^S) = \frac{1}{\tau^{\text{update}}} + f(\text{TWAP window}, \text{Oracle calls})
+$$
 
 **Throughput Function:**
-$$\text{Throughput}(\boldsymbol{\theta}^S) = \frac{\text{Max Orders/sec}}{1 + g(\text{Complexity}(\boldsymbol{\theta}^S))}$$
+
+$$
+\text{Throughput}(\boldsymbol{\theta}^S) = \frac{\text{Max Orders/sec}}{1 + g(\text{Complexity}(\boldsymbol{\theta}^S))}
+$$
 
 **Typical Targets:**
 - **CEX:** $L_{\max} = 1$ms, $T_{\min} = 100,000$ TPS
@@ -2067,7 +2374,10 @@ $$\text{Throughput}(\boldsymbol{\theta}^S) = \frac{\text{Max Orders/sec}}{1 + g(
 #### 14.2 Technical and Business Constraints
 
 **1. Position Limit Constraints:**
-$$q^{\max}_m \leq \min(\text{Liquidity Limit}_m, \text{Risk Limit}_m, \text{Technical Limit}_m)$$
+
+$$
+q^{\max}_m \leq \min(\text{Liquidity Limit}_m, \text{Risk Limit}_m, \text{Technical Limit}_m)
+$$
 
 **Component Definitions:**
 - **Liquidity Limit:** Maximum position that can be liquidated orderly
@@ -2084,7 +2394,10 @@ BTC-PERP Position Limit Calculation:
 ```
 
 **2. Leverage Constraints:**
-$$\frac{1}{r^{\text{init}}_m} \leq \text{Max Leverage}_{\text{technical}}$$
+
+$$
+\frac{1}{r^{\text{init}}_m} \leq \text{Max Leverage}_{\text{technical}}
+$$
 
 **Technical Leverage Limits:**
 - **System Risk Capacity:** Maximum leverage system can safely support
@@ -2114,10 +2427,16 @@ max_leverage_ALT = min(20, system_risk_capacity * 0.4);
 | $\tau^{\text{update}}$ | Update Frequency | Low | Medium | **High** | Rarely | Infrastructure-dependent |
 
 **Priority Scoring:**
-$$\text{Priority Score} = w_r \cdot \text{Risk Impact} + w_u \cdot \text{UX Impact} - w_c \cdot \text{Complexity}$$
+
+$$
+\text{Priority Score} = w_r \cdot \text{Risk Impact} + w_u \cdot \text{UX Impact} - w_c \cdot \text{Complexity}
+$$
 
 **Update Schedule Optimization:**
-$$\text{Update Frequency} = f(\text{Priority Score}, \text{Parameter Volatility}, \text{Governance Capacity})$$
+
+$$
+\text{Update Frequency} = f(\text{Priority Score}, \text{Parameter Volatility}, \text{Governance Capacity})
+$$
 
 #### 15.2 Recommended Parameter Configurations by Exchange Type
 
@@ -2228,7 +2547,10 @@ For blockchain-based perpetual futures exchanges, the entire system must be mode
 #### 1. Global State Representation
 
 **Complete System State:**
-$$\mathcal{S} = (\mathcal{U}, \mathcal{M}, \mathcal{O}, \mathcal{P}, \mathcal{IF}, t)$$
+
+$$
+\mathcal{S} = (\mathcal{U}, \mathcal{M}, \mathcal{O}, \mathcal{P}, \mathcal{IF}, t)
+$$
 
 **State Components:**
 
@@ -2244,7 +2566,10 @@ $$\mathcal{S} = (\mathcal{U}, \mathcal{M}, \mathcal{O}, \mathcal{P}, \mathcal{IF
 #### 2. User State Definition
 
 **Individual User State:**
-$$u_i = (C_i, Q_i, F_i, H_i, O_i)$$
+
+$$
+u_i = (C_i, Q_i, F_i, H_i, O_i)
+$$
 
 **User State Components:**
 
@@ -2269,7 +2594,10 @@ Q_{i,m} &\in \mathbb{R} \quad \forall m \text{ (signed positions)} \\
 #### 3. Market State Definition
 
 **Individual Market State:**
-$$m_j = (P^I_j, P^M_j, P^L_j, f_j, \text{OI}_j, B_j, A_j)$$
+
+$$
+m_j = (P^I_j, P^M_j, P^L_j, f_j, \text{OI}_j, B_j, A_j)
+$$
 
 **Market State Components:**
 
@@ -2299,7 +2627,10 @@ P^I_j, P^M_j, P^L_j &> 0 \quad \text{(positive prices)} \\
 #### 1. Deterministic State Updates
 
 **General State Transition:**
-$$\mathcal{S}_{t+1} = \mathcal{T}(\mathcal{S}_t, \mathcal{E}_t, \mathcal{P})$$
+
+$$
+\mathcal{S}_{t+1} = \mathcal{T}(\mathcal{S}_t, \mathcal{E}_t, \mathcal{P})
+$$
 
 **Variable Definitions:**
 - $\mathcal{S}_t$: Current system state at time $t$
@@ -2308,12 +2639,18 @@ $$\mathcal{S}_{t+1} = \mathcal{T}(\mathcal{S}_t, \mathcal{E}_t, \mathcal{P})$$
 - $\mathcal{T}$: Deterministic transition function
 
 **Event Types:**
-$$\mathcal{E}_t = \mathcal{E}^{\text{trade}}_t \cup \mathcal{E}^{\text{order}}_t \cup \mathcal{E}^{\text{oracle}}_t \cup \mathcal{E}^{\text{funding}}_t \cup \mathcal{E}^{\text{liquidation}}_t$$
+
+$$
+\mathcal{E}_t = \mathcal{E}^{\text{trade}}_t \cup \mathcal{E}^{\text{order}}_t \cup \mathcal{E}^{\text{oracle}}_t \cup \mathcal{E}^{\text{funding}}_t \cup \mathcal{E}^{\text{liquidation}}_t
+$$
 
 #### 2. Trade Execution State Transitions
 
 **Trade Event:**
-$$e^{\text{trade}} = (\text{maker}_i, \text{taker}_j, m, q, p, t)$$
+
+$$
+e^{\text{trade}} = (\text{maker}_i, \text{taker}_j, m, q, p, t)
+$$
 
 **State Updates from Trade:**
 
@@ -2344,27 +2681,48 @@ where $s_i, s_j \in \{-1, +1\}$ are the position direction signs for maker and t
 #### 3. Funding State Transitions
 
 **Funding Event (Periodic):**
-$$e^{\text{funding}} = (m, f_m, t_{\text{funding}})$$
+
+$$
+e^{\text{funding}} = (m, f_m, t_{\text{funding}})
+$$
 
 **Funding Rate Calculation:**
-$$f_m^{t+1} = \text{clamp}\left(P_m + I_m, -f^{\max}_m, +f^{\max}_m\right)$$
+
+$$
+f_m^{t+1} = \text{clamp}\left(P_m + I_m, -f^{\max}_m, +f^{\max}_m\right)
+$$
 
 where:
-$$P_m = \frac{P^M_m - P^I_m}{P^I_m} \quad \text{(premium component)}$$
+
+$$
+P_m = \frac{P^M_m - P^I_m}{P^I_m} \quad \text{(premium component)}
+$$
 
 **Funding Payment Updates:**
-$$F_{i,m}^{t+1} = F_{i,m}^t + \text{sign}(Q_{i,m}) \cdot |Q_{i,m}| \cdot P^M_m \cdot f_m$$
+
+$$
+F_{i,m}^{t+1} = F_{i,m}^t + \text{sign}(Q_{i,m}) \cdot |Q_{i,m}| \cdot P^M_m \cdot f_m
+$$
 
 **Funding Conservation Verification:**
-$$\sum_{i \in \mathcal{I}} (F_{i,m}^{t+1} - F_{i,m}^t) = 0 \quad \text{(zero-sum property)}$$
+
+$$
+\sum_{i \in \mathcal{I}} (F_{i,m}^{t+1} - F_{i,m}^t) = 0 \quad \text{(zero-sum property)}
+$$
 
 #### 4. Liquidation State Transitions
 
 **Liquidation Trigger Check:**
-$$\text{Liquidation Required}_i = E_i^t \leq \text{MM}_i^t$$
+
+$$
+\text{Liquidation Required}_i = E_i^t \leq \text{MM}_i^t
+$$
 
 **Liquidation Event:**
-$$e^{\text{liquidation}} = (i, m^*, \phi, P^{\text{liq}})$$
+
+$$
+e^{\text{liquidation}} = (i, m^*, \phi, P^{\text{liq}})
+$$
 
 **Liquidation State Updates:**
 
@@ -2383,7 +2741,9 @@ C_{i,\text{base}}^{t+1} &= C_{i,\text{base}}^t + \text{Realized PnL} - \text{Pen
 **Deterministic Event Processing:**
 For each block, events must be processed in strict order to ensure deterministic results:
 
-$$\text{Process Block}(\mathcal{S}_t, \mathcal{E}_t) = \mathcal{S}_{t+1}$$
+$$
+\text{Process Block}(\mathcal{S}_t, \mathcal{E}_t) = \mathcal{S}_{t+1}
+$$
 
 **Processing Order:**
 1. **Oracle Updates:** $\mathcal{S}^{(1)} = \text{ProcessOracles}(\mathcal{S}_t, \mathcal{E}^{\text{oracle}}_t)$
@@ -2406,7 +2766,10 @@ where:
 $$\text{Premium}_m = (1-\beta_m) \cdot (P^L_m - P^I_m) + \beta_m \cdot (\text{TWAP}_m - P^I_m)$$
 
 **Order Matching Function:**
-$$\text{Matches} = \text{MatchOrders}(\text{Incoming Order}, \text{Order Book})$$
+
+$$
+\text{Matches} = \text{MatchOrders}(\text{Incoming Order}, \text{Order Book})
+$$
 
 **Deterministic Matching Rules:**
 1. **Price Priority:** Best prices matched first
@@ -2414,7 +2777,10 @@ $$\text{Matches} = \text{MatchOrders}(\text{Incoming Order}, \text{Order Book})$
 3. **Pro-Rata:** If multiple orders at same price and time, split proportionally
 
 **Liquidation Selection Function:**
-$$\text{Liquidation Candidates} = \{i : E_i \leq \text{MM}_i\}$$
+
+$$
+\text{Liquidation Candidates} = \{i : E_i \leq \text{MM}_i\}
+$$
 
 **Deterministic Liquidation Order:**
 1. **Sort by margin ratio:** Lowest margin ratio liquidated first
@@ -2426,7 +2792,10 @@ $$\text{Liquidation Candidates} = \{i : E_i \leq \text{MM}_i\}$$
 #### 1. Determinism Guarantees
 
 **Deterministic Property:**
-$$\forall \mathcal{S}_t, \mathcal{E}_t, \mathcal{P} : \mathcal{T}(\mathcal{S}_t, \mathcal{E}_t, \mathcal{P}) \text{ produces unique } \mathcal{S}_{t+1}$$
+
+$$
+\forall \mathcal{S}_t, \mathcal{E}_t, \mathcal{P} : \mathcal{T}(\mathcal{S}_t, \mathcal{E}_t, \mathcal{P}) \text{ produces unique } \mathcal{S}_{t+1}
+$$
 
 **Implementation Requirements:**
 - **Fixed-point arithmetic:** All calculations use deterministic fixed-point math
@@ -2439,16 +2808,28 @@ $$\forall \mathcal{S}_t, \mathcal{E}_t, \mathcal{P} : \mathcal{T}(\mathcal{S}_t,
 **System Invariants (Must Hold After Every Transition):**
 
 **Invariant 1: Zero-Sum Positions**
-$$\forall m \in \mathcal{M} : \sum_{i \in \mathcal{I}} Q_{i,m} = 0$$
+
+$$
+\forall m \in \mathcal{M} : \sum_{i \in \mathcal{I}} Q_{i,m} = 0
+$$
 
 **Invariant 2: Funding Conservation**
-$$\forall m \in \mathcal{M} : \sum_{i \in \mathcal{I}} F_{i,m} = 0$$
+
+$$
+\forall m \in \mathcal{M} : \sum_{i \in \mathcal{I}} F_{i,m} = 0
+$$
 
 **Invariant 3: Collateral Conservation**
-$$\sum_{i \in \mathcal{I}} \sum_{k} C_{i,k} + \mathcal{IF} + \text{Fees Collected} = \text{Total Deposits}$$
+
+$$
+\sum_{i \in \mathcal{I}} \sum_{k} C_{i,k} + \mathcal{IF} + \text{Fees Collected} = \text{Total Deposits}
+$$
 
 **Invariant 4: Price Bounds**
-$$\forall m \in \mathcal{M} : |P^M_m - P^I_m| \leq \delta^{\max}_m \cdot P^I_m$$
+
+$$
+\forall m \in \mathcal{M} : |P^M_m - P^I_m| \leq \delta^{\max}_m \cdot P^I_m
+$$
 
 **Invariant Verification Function:**
 $$\text{ValidState}(\mathcal{S}) = \bigwedge_{i=1}^{4} \text{Invariant}_i(\mathcal{S})$$
@@ -2484,7 +2865,10 @@ E_i + \text{Unrealized PnL}(Q_i^{\text{new}}) &\geq \text{IM}_i^{\text{new}} \qu
 ```
 
 **State Transition:**
-$$\mathcal{S}_{t+1} = \text{PlaceOrder}(\mathcal{S}_t, o)$$
+
+$$
+\mathcal{S}_{t+1} = \text{PlaceOrder}(\mathcal{S}_t, o)
+$$
 
 **Updates:**
 - Add order to order book: $\mathcal{O}_{t+1} = \mathcal{O}_t \cup \{o\}$
@@ -2540,7 +2924,10 @@ $$\sum_{i \in \mathcal{I}} (F_{i,m}^{t+1} - F_{i,m}^t) = 0 \quad \text{(funding 
 #### 4. Liquidation Transition
 
 **Liquidation Trigger:**
-$$\text{Liquidation Set} = \{i \in \mathcal{I} : E_i^t \leq \text{MM}_i^t\}$$
+
+$$
+\text{Liquidation Set} = \{i \in \mathcal{I} : E_i^t \leq \text{MM}_i^t\}
+$$
 
 **Liquidation Processing (Deterministic Order):**
 1. **Sort candidates:** By margin ratio (ascending), then by total notional (descending), then by user ID
@@ -2559,10 +2946,16 @@ C_{i,\text{base}}^{t+1} &= C_{i,\text{base}}^t + \text{PnL} - \text{Penalty} \qu
 #### 1. Validator State Synchronization
 
 **State Hash Function:**
-$$H(\mathcal{S}) = \text{Hash}(\text{Serialize}(\mathcal{U}) \| \text{Serialize}(\mathcal{M}) \| \text{Serialize}(\mathcal{O}) \| \mathcal{IF} \| t)$$
+
+$$
+H(\mathcal{S}) = \text{Hash}(\text{Serialize}(\mathcal{U}) \| \text{Serialize}(\mathcal{M}) \| \text{Serialize}(\mathcal{O}) \| \mathcal{IF} \| t)
+$$
 
 **Consensus Requirement:**
-$$\forall \text{validators } v_1, v_2 : H(\mathcal{S}_{v_1}) = H(\mathcal{S}_{v_2})$$
+
+$$
+\forall \text{validators } v_1, v_2 : H(\mathcal{S}_{v_1}) = H(\mathcal{S}_{v_2})
+$$
 
 **State Serialization (Deterministic):**
 - **Fixed ordering:** All maps and sets serialized in deterministic order (e.g., lexicographic)
@@ -2573,7 +2966,10 @@ $$\forall \text{validators } v_1, v_2 : H(\mathcal{S}_{v_1}) = H(\mathcal{S}_{v_
 
 **State Transition Verification:**
 Each validator independently computes:
-$$\mathcal{S}_{t+1}^{(v)} = \mathcal{T}(\mathcal{S}_t, \mathcal{E}_t, \mathcal{P})$$
+
+$$
+\mathcal{S}_{t+1}^{(v)} = \mathcal{T}(\mathcal{S}_t, \mathcal{E}_t, \mathcal{P})
+$$
 
 **Consensus Mechanism:**
 $$\text{Consensus}(\mathcal{S}_{t+1}) = \begin{cases}
@@ -2592,7 +2988,10 @@ In case of disagreement, validators must:
 #### 1. Computational Complexity
 
 **Per-Block Complexity:**
-$$\text{Complexity} = O(|\mathcal{E}^{\text{trade}}| \log |\mathcal{O}|) + O(|\mathcal{I}| \times |\mathcal{M}|) + O(|\text{Liquidations}|^2)$$
+
+$$
+\text{Complexity} = O(|\mathcal{E}^{\text{trade}}| \log |\mathcal{O}|) + O(|\mathcal{I}| \times |\mathcal{M}|) + O(|\text{Liquidations}|^2)
+$$
 
 **Component Breakdown:**
 - **Order matching:** $O(|\mathcal{E}^{\text{trade}}| \log |\mathcal{O}|)$ for price-time priority
@@ -2602,7 +3001,10 @@ $$\text{Complexity} = O(|\mathcal{E}^{\text{trade}}| \log |\mathcal{O}|) + O(|\m
 #### 2. State Size Management
 
 **State Size Bounds:**
-$$|\mathcal{S}| = O(|\mathcal{I}| \times |\mathcal{M}|) + O(|\mathcal{O}|) + O(|\mathcal{M}|)$$
+
+$$
+|\mathcal{S}| = O(|\mathcal{I}| \times |\mathcal{M}|) + O(|\mathcal{O}|) + O(|\mathcal{M}|)
+$$
 
 **Storage Optimization:**
 - **Sparse representation:** Only store non-zero positions and balances
@@ -2638,7 +3040,10 @@ $$|\mathcal{S}| = O(|\mathcal{I}| \times |\mathcal{M}|) + O(|\mathcal{O}|) + O(|
 #### 2. Testing Framework
 
 **Property-Based Testing:**
-$$\forall \mathcal{S}_t, \mathcal{E}_t : \text{Property}(\mathcal{T}(\mathcal{S}_t, \mathcal{E}_t, \mathcal{P})) = \text{True}$$
+
+$$
+\forall \mathcal{S}_t, \mathcal{E}_t : \text{Property}(\mathcal{T}(\mathcal{S}_t, \mathcal{E}_t, \mathcal{P})) = \text{True}
+$$
 
 **Invariant Testing:**
 Generate random valid states and event sequences, verify invariants hold after all transitions.
@@ -2678,7 +3083,10 @@ When expanding perpetual futures beyond cryptocurrencies to traditional assets, 
 #### 1. Margin Requirements
 
 **Universal Calibration Formula:**
-$$r^{\text{init}}_m = r_{\text{base}} + k_{\text{vol}} \cdot \sigma_m + k_{\text{gap}} \cdot G_m$$
+
+$$
+r^{\text{init}}_m = r_{\text{base}} + k_{\text{vol}} \cdot \sigma_m + k_{\text{gap}} \cdot G_m
+$$
 
 **Variable Definitions:**
 
@@ -2691,7 +3099,10 @@ $$r^{\text{init}}_m = r_{\text{base}} + k_{\text{vol}} \cdot \sigma_m + k_{\text
 | **Gap Risk** | $G_m$ | Gap risk score for asset $m$ | 0-1 | Based on trading hours and historical gaps |
 
 **Gap Risk Calculation:**
-$$G_m = \frac{\text{Non-Trading Hours}}{\text{Total Hours}} \times \frac{\text{Avg Weekend Gap}}{\text{Daily Volatility}}$$
+
+$$
+G_m = \frac{\text{Non-Trading Hours}}{\text{Total Hours}} \times \frac{\text{Avg Weekend Gap}}{\text{Daily Volatility}}
+$$
 
 **Asset-Specific Examples:**
 
@@ -2703,14 +3114,20 @@ $$G_m = \frac{\text{Non-Trading Hours}}{\text{Total Hours}} \times \frac{\text{A
 | **BTC** | 80% | 0.0 | 18% | 6x |
 
 **Maintenance Margin:**
-$$r^{\text{maint}}_m = 0.7 \times r^{\text{init}}_m$$
+
+$$
+r^{\text{maint}}_m = 0.7 \times r^{\text{init}}_m
+$$
 
 *Interpretation:* Maintenance margin is typically 70% of initial margin, providing a buffer before liquidation.
 
 #### 2. Funding Rate Parameters
 
 **Funding Rate Cap Formula:**
-$$f^{\max}_m = f_{\text{base}} + k_{\text{vol}} \cdot \sigma_m + H_m$$
+
+$$
+f^{\max}_m = f_{\text{base}} + k_{\text{vol}} \cdot \sigma_m + H_m
+$$
 
 **Variable Definitions:**
 
@@ -2741,7 +3158,10 @@ $$H_m = \begin{cases}
 #### 3. Liquidation Parameters
 
 **Liquidation Penalty Formula:**
-$$\gamma_m = \gamma_{\text{base}} + k_{\text{vol}} \cdot \sigma_m + L_m$$
+
+$$
+\gamma_m = \gamma_{\text{base}} + k_{\text{vol}} \cdot \sigma_m + L_m
+$$
 
 **Variable Definitions:**
 
@@ -2772,7 +3192,10 @@ where ADV = Average Daily Volume in USD, and values are in decimal form (0.003 =
 #### 4. Position Limits
 
 **Position Limit Formula:**
-$$q^{\max}_m = \min\left(\frac{\text{ADV}_m}{k_{\text{impact}}}, Q_{\text{system}}\right)$$
+
+$$
+q^{\max}_m = \min\left(\frac{\text{ADV}_m}{k_{\text{impact}}}, Q_{\text{system}}\right)
+$$
 
 **Variable Definitions:**
 
@@ -2841,7 +3264,10 @@ $$q^{\max}_m = \min\left(\frac{\text{ADV}_m}{k_{\text{impact}}}, Q_{\text{system
 
 #### Volatility Calculation
 **Historical Volatility Formula:**
-$$\sigma_m = \sqrt{252} \cdot \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} (r_i - \bar{r})^2}$$
+
+$$
+\sigma_m = \sqrt{252} \cdot \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} (r_i - \bar{r})^2}
+$$
 
 **Variable Definitions:**
 - $\sigma_m$: Annualized volatility for asset $m$
@@ -2853,7 +3279,10 @@ $$\sigma_m = \sqrt{252} \cdot \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} (r_i - \bar{r})
 
 #### Cross-Asset Risk
 **Correlation Impact on Margins:**
-$$r^{\text{portfolio}} = r^{\text{base}} + k_{\text{corr}} \cdot \max_{i,j} |\rho_{ij}|$$
+
+$$
+r^{\text{portfolio}} = r^{\text{base}} + k_{\text{corr}} \cdot \max_{i,j} |\rho_{ij}|
+$$
 
 **When to Apply:** If new asset has correlation $|\rho| > 0.5$ with existing assets, increase margin requirements by correlation factor.
 
@@ -2933,7 +3362,10 @@ Token price $P_m(t)$ is extracted from available spot market data:
 - **CEX:** Last trade price or volume-weighted average price
 
 **Volatility Calculation (Universal Formula):**
-$$\sigma_m = \sqrt{252} \cdot \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} \left(\ln\frac{P_m(t_i)}{P_m(t_{i-1})} - \bar{r}\right)^2}$$
+
+$$
+\sigma_m = \sqrt{252} \cdot \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} \left(\ln\frac{P_m(t_i)}{P_m(t_{i-1})} - \bar{r}\right)^2}
+$$
 
 **Variable Definitions:**
 
@@ -2952,7 +3384,10 @@ $$\text{Risk Class}_m = \begin{cases}
 \end{cases}$$
 
 **Automated Initial Margin Calculation:**
-$$r^{\text{init}}_m = \text{clamp}(r_{\text{base}} + k_{\text{vol}} \cdot \sigma_m + \text{Risk Bonus}_m, 0.05, 0.5)$$
+
+$$
+r^{\text{init}}_m = \text{clamp}(r_{\text{base}} + k_{\text{vol}} \cdot \sigma_m + \text{Risk Bonus}_m, 0.05, 0.5)
+$$
 
 **Parameter Definitions:**
 - $r_{\text{base}} = 0.03$ (3% base margin - minimum for any asset)
@@ -2969,7 +3404,10 @@ $$\text{Risk Bonus}_m = \begin{cases}
 #### 2. Liquidity Assessment from Spot Markets
 
 **Universal Liquidity Score:**
-$$L_m = \frac{D_m}{\text{ADV}_m} \times \frac{\text{ADV}_m}{\text{Market Cap}_m} \times \text{Venue Factor}_m$$
+
+$$
+L_m = \frac{D_m}{\text{ADV}_m} \times \frac{\text{ADV}_m}{\text{Market Cap}_m} \times \text{Venue Factor}_m
+$$
 
 **Variable Definitions:**
 
@@ -2980,14 +3418,20 @@ $$L_m = \frac{D_m}{\text{ADV}_m} \times \frac{\text{ADV}_m}{\text{Market Cap}_m}
 | **Venue Factor** | $\text{Venue Factor}_m$ | Diversification across trading venues | Number of active venues | Reduce single-venue risk |
 
 **Venue Factor Calculation:**
-$$\text{Venue Factor}_m = \min\left(1.0, \frac{\text{Active Venues}_m}{3}\right)$$
+
+$$
+\text{Venue Factor}_m = \min\left(1.0, \frac{\text{Active Venues}_m}{3}\right)
+$$
 
 where $\text{Active Venues}_m$ is the number of venues with >10% of total volume.
 
 **Liquidity-Based Parameter Adjustments:**
 
 **Liquidation Penalty (Inversely Related to Liquidity):**
-$$\gamma_m = \gamma_{\text{base}} + \frac{k_{\text{liq}}}{1 + L_m}$$
+
+$$
+\gamma_m = \gamma_{\text{base}} + \frac{k_{\text{liq}}}{1 + L_m}
+$$
 
 **Parameter Values:**
 - $\gamma_{\text{base}} = 0.008$ (0.8% base penalty for all assets)
@@ -2996,7 +3440,10 @@ $$\gamma_m = \gamma_{\text{base}} + \frac{k_{\text{liq}}}{1 + L_m}$$
 **Interpretation:** Tokens with higher liquidity scores receive lower liquidation penalties, encouraging liquid market development.
 
 **Position Limit Based on Market Depth:**
-$$q^{\max}_m = \text{clamp}\left(\frac{\text{ADV}_m \times L_m}{k_{\text{impact}}}, 10^4, 10^7\right)$$
+
+$$
+q^{\max}_m = \text{clamp}\left(\frac{\text{ADV}_m \times L_m}{k_{\text{impact}}}, 10^4, 10^7\right)
+$$
 
 **Parameter Values:**
 - $k_{\text{impact}} = 25$ (impact factor - prevents excessive market impact)
@@ -3042,7 +3489,10 @@ $$r^{\text{final}}_m = r^{\text{init}}_m \times \left(1 + k_{\text{corr}} \times
 #### 1. Token Viability Scoring
 
 **Composite Viability Score:**
-$$\text{Viability}_m = w_1 \cdot S_{\text{liquidity}} + w_2 \cdot S_{\text{stability}} + w_3 \cdot S_{\text{activity}}$$
+
+$$
+\text{Viability}_m = w_1 \cdot S_{\text{liquidity}} + w_2 \cdot S_{\text{stability}} + w_3 \cdot S_{\text{activity}}
+$$
 
 **Component Definitions:**
 
@@ -3067,7 +3517,10 @@ $$\text{Decision}_m = \begin{cases}
 #### 2. Market Manipulation Detection
 
 **Trading Pattern Analysis:**
-$$\text{Manipulation Score}_m = \alpha \cdot \text{Volume Concentration} + \beta \cdot \text{Price Volatility Ratio}$$
+
+$$
+\text{Manipulation Score}_m = \alpha \cdot \text{Volume Concentration} + \beta \cdot \text{Price Volatility Ratio}
+$$
 
 **Component Definitions:**
 - **Volume Concentration:** $\frac{\text{Top 5 Trader Volume}}{\text{Total Volume}}$ (higher = more suspicious)
@@ -3078,7 +3531,10 @@ $$\text{Manipulation Score}_m = \alpha \cdot \text{Volume Concentration} + \beta
 - $\beta = 0.4$ (volatility ratio weight)
 
 **Manipulation Threshold:**
-$$\text{Suspicious Activity} = \text{Manipulation Score}_m > 0.6$$
+
+$$
+\text{Suspicious Activity} = \text{Manipulation Score}_m > 0.6
+$$
 
 **Additional Red Flags:**
 - **Coordinated trading:** Multiple addresses with identical trading patterns
@@ -3188,7 +3644,10 @@ With Nexus's enshrined spot CLOB DEX, the perpetual system has privileged access
 - **MEV resistance** through native integration and block-level coordination
 
 **Enhanced Parameter Accuracy:**
-$$\text{Parameter Confidence}_m = \frac{\text{Data Quality Score} \times \text{Data Completeness}}{\text{External Dependency Factor}}$$
+
+$$
+\text{Parameter Confidence}_m = \frac{\text{Data Quality Score} \times \text{Data Completeness}}{\text{External Dependency Factor}}
+$$
 
 **Nexus Advantage:**
 - **Data Quality Score:** 1.0 (perfect data quality from L1)
@@ -3199,7 +3658,10 @@ $$\text{Parameter Confidence}_m = \frac{\text{Data Quality Score} \times \text{D
 #### 2. Cross-Venue Price Validation
 
 **Multi-Venue Price Consistency:**
-$$\text{Price Confidence}_m = 1 - \frac{\max_{i,j} |P_i(t) - P_j(t)|}{\text{median}(P_1, P_2, \ldots, P_k)}$$
+
+$$
+\text{Price Confidence}_m = 1 - \frac{\max_{i,j} |P_i(t) - P_j(t)|}{\text{median}(P_1, P_2, \ldots, P_k)}
+$$
 
 **Variable Definitions:**
 - $P_i(t)$: Price from venue $i$ (Nexus CLOB, external AMMs, CEXs)
@@ -3208,7 +3670,10 @@ $$\text{Price Confidence}_m = 1 - \frac{\max_{i,j} |P_i(t) - P_j(t)|}{\text{medi
 
 **Arbitrage-Based Risk Assessment:**
 If $\text{Price Confidence}_m < 0.95$ (>5% price deviation), apply additional safety margins:
-$$r^{\text{adjusted}}_m = r^{\text{init}}_m \times (1 + 0.5 \times (1 - \text{Price Confidence}_m))$$
+
+$$
+r^{\text{adjusted}}_m = r^{\text{init}}_m \times (1 + 0.5 \times (1 - \text{Price Confidence}_m))
+$$
 
 **Interpretation:** Tokens with inconsistent pricing across venues receive higher margins due to arbitrage risk and potential manipulation.
 
@@ -3246,7 +3711,10 @@ $$\begin{aligned}
 
 **System Stability Check:**
 Before deployment, verify that adding asset $m$ maintains:
-$$\text{System VaR}_{0.01}(\text{Portfolio} \cup \{m\}) \leq 1.1 \times \text{System VaR}_{0.01}(\text{Portfolio})$$
+
+$$
+\text{System VaR}_{0.01}(\text{Portfolio} \cup \{m\}) \leq 1.1 \times \text{System VaR}_{0.01}(\text{Portfolio})
+$$
 
 **Interpretation:** New asset should not increase system-wide 99th percentile risk by more than 10%.
 
@@ -3291,15 +3759,21 @@ $$\text{System VaR}_{0.01}(\text{Portfolio} \cup \{m\}) \leq 1.1 \times \text{Sy
 
 **Safety Margin Application:**
 All auto-generated parameters are adjusted for initial deployment:
-$$\begin{aligned}
+
+```math
+\begin{aligned}
 r^{\text{deployed}}_m &= 1.4 \times r^{\text{calculated}}_m \quad \text{(40\% higher margins)} \\
 q^{\text{deployed}}_m &= 0.6 \times q^{\text{calculated}}_m \quad \text{(40\% lower position limits)} \\
 f^{\text{deployed}}_m &= 1.3 \times f^{\text{calculated}}_m \quad \text{(30\% wider funding caps)}
-\end{aligned}$$
+\end{aligned}
+```
 
 **Gradual Parameter Normalization:**
 After $d$ days of successful operation without incidents:
-$$\text{Safety Multiplier}(d) = \max(1.0, 1.4 - 0.016d)$$
+
+$$
+\text{Safety Multiplier}(d) = \max(1.0, 1.4 - 0.016d)
+$$
 
 **Variable Definitions:**
 - $d$: Days since perpetual launch
