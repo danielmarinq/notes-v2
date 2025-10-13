@@ -1,5 +1,9 @@
 # A Formal Primer on Perpetual Futures Contracts
 
+Daniel Marin | 10/12/2025
+
+
+
 ## Table of Contents
 
 1. [Introduction and Motivation](#introduction-and-motivation)
@@ -1750,12 +1754,15 @@ where $\sum_{i=1}^{4} w_i = 1$ and $w_i \geq 0$ are **preference weights** that 
 ### 6. Parameter Sensitivity Analysis
 
 **Sensitivity Matrix Definition:**
-$$\mathbf{S} = \begin{pmatrix}
+
+$$
+\mathbf{S} = \begin{pmatrix}
 \frac{\partial J_1}{\partial \theta_1} & \frac{\partial J_1}{\partial \theta_2} & \cdots & \frac{\partial J_1}{\partial \theta_n} \\
 \frac{\partial J_2}{\partial \theta_1} & \frac{\partial J_2}{\partial \theta_2} & \cdots & \frac{\partial J_2}{\partial \theta_n} \\
 \vdots & \vdots & \ddots & \vdots \\
 \frac{\partial J_4}{\partial \theta_1} & \frac{\partial J_4}{\partial \theta_2} & \cdots & \frac{\partial J_4}{\partial \theta_n}
-\end{pmatrix}$$
+\end{pmatrix}
+$$
 
 **Matrix Interpretation:**
 - **Rows:** Different objective functions (Risk, Efficiency, UX, Cost)

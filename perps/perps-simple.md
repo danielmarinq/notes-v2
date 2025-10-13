@@ -173,9 +173,11 @@ $$\text{Effective Leverage} = \frac{\text{Total Notional Value}}{\text{Account E
 ## Liquidation and Solvency
 
 ### Liquidation Trigger
+
 $$\text{Account Equity} \leq \text{Maintenance Margin Requirement}$$
 
 Equivalently:
+
 $$\text{Margin Ratio} \leq \frac{\text{Maintenance Margin}}{\text{Total Notional}}$$
 
 ### Liquidation Process
