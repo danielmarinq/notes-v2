@@ -1,0 +1,147 @@
+# Nexus Notes Repository .gitignore
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor and IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vim/
+.netrwhist
+
+# Typora and Markdown Editors
+.typora/
+typora-user-images/
+*.tmp.md
+
+# LaTeX and PDF Generation
+*.aux
+*.log
+*.out
+*.toc
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.bbl
+*.blg
+*.idx
+*.ind
+*.ilg
+*.lot
+*.lof
+
+# Generated Documentation
+docs/_build/
+site/
+_site/
+.jekyll-cache/
+.jekyll-metadata
+
+# Backup Files
+*.bak
+*.backup
+*~
+*.orig
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Node.js (if using any JS tools for documentation)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Python (if using any Python tools)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebooks (if any)
+.ipynb_checkpoints
+
+# Local Environment Files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Log Files
+*.log
+logs/
+
+# Cache Directories
+.cache/
+.parcel-cache/
+
+# Build Outputs
+build/
+dist/
+out/
+
+# Personal Notes (if you want to keep some notes private)
+# personal/
+# drafts/
+# private/
+
+# Large Files (uncomment if you have large assets)
+# *.pdf
+# *.png
+# *.jpg
+# *.jpeg
+# *.gif
+# *.mp4
+# *.mov
+
+# Specific to Documentation Projects
+*.html
+*.pdf
+# Uncomment above if you don't want to track generated HTML/PDF files
+
+# macOS Specific
+.AppleDouble
+.LSOverride
+Icon?
+
+# Windows Specific
+desktop.ini
+$RECYCLE.BIN/
+
+# Linux Specific
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Git Specific
+*.patch
+*.diff
+
+# Miscellaneous
+*.zip
+*.tar.gz
+*.rar
+*.7z
